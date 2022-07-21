@@ -1,0 +1,1007 @@
+   1               		.file	"subs.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	delay_ms0
+  12               	delay_ms0:
+  13               	.LFB2:
+  14               		.file 1 "subs.c"
+   1:subs.c        **** #include "subs.h"
+   2:subs.c        **** #include <avr/pgmspace.h>
+   3:subs.c        **** #include "disp.h"
+   4:subs.c        **** #include "io.h"
+   5:subs.c        **** 
+   6:subs.c        **** void delay_ms0(uint8_t ms)
+   7:subs.c        **** {
+  15               		.loc 1 7 0
+  16               		.cfi_startproc
+  17               	.LVL0:
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+  22               	.LBB6:
+  23               	.LBB7:
+  24               		.file 2 "subs.h"
+   1:subs.h        **** //#include <avr/wdt.h>
+   2:subs.h        **** #define XTAL F_CPU
+   3:subs.h        **** #include <stdint.h>
+   4:subs.h        **** #include <avr/interrupt.h>
+   5:subs.h        **** 
+   6:subs.h        **** #define BTN_LONG_DELAY	2
+   7:subs.h        **** 
+   8:subs.h        **** typedef enum {
+   9:subs.h        ****     ADC0=0,
+  10:subs.h        ****     ADC1 =1,
+  11:subs.h        ****     ADC2 =2,
+  12:subs.h        ****     ADC3 =3,
+  13:subs.h        ****     ADC4 =4,
+  14:subs.h        ****     ADC5 =5,
+  15:subs.h        ****     ADC6 =6,
+  16:subs.h        ****     ADC7 =7
+  17:subs.h        **** } adc_in_type;
+  18:subs.h        **** 
+  19:subs.h        **** /*************************************************************************
+  20:subs.h        ****  delay loop for small accurate delays: 16-bit counter, 4 cycles/loop
+  21:subs.h        ****  *************************************************************************/
+  22:subs.h        **** static inline void _delayFourCycles(uint16_t __count)
+  23:subs.h        **** {
+  24:subs.h        ****     if (__count == 0)
+  25:subs.h        **** 	__asm__ __volatile__( "rjmp 1f\n 1:" );
+  26:subs.h        ****     // 2 cycles
+  27:subs.h        ****     else
+  28:subs.h        **** 	__asm__ __volatile__ (
+  25               		.loc 2 28 0
+  26 0000 20ED      		ldi r18,lo8(-48)
+  27 0002 37E0      		ldi r19,lo8(7)
+  28               	.L2:
+  29               	.LBE7:
+  30               	.LBE6:
+   8:subs.c        ****     while (ms > 0) {
+  31               		.loc 1 8 0
+  32 0004 8823      		tst r24
+  33 0006 01F0      		breq .L5
+  34               	.LVL1:
+  35               	.LBB9:
+  36               	.LBB8:
+  37               		.loc 2 28 0
+  38 0008 F901      		movw r30,r18
+  39               	/* #APP */
+  40               	 ;  28 "subs.h" 1
+  41 000a 3197      		1: sbiw r30,1
+  42 000c 01F4      		brne 1b
+  43               	 ;  0 "" 2
+  44               	.LVL2:
+  45               	/* #NOAPP */
+  46               	.LBE8:
+  47               	.LBE9:
+   9:subs.c        **** 	delay(1000);
+  10:subs.c        **** 	ms--;
+  48               		.loc 1 10 0
+  49 000e 8150      		subi r24,lo8(-(-1))
+  50               	.LVL3:
+  51 0010 00C0      		rjmp .L2
+  52               	.L5:
+  53               	/* epilogue start */
+  11:subs.c        ****     }
+  12:subs.c        **** //	wdt_reset();
+  13:subs.c        **** }
+  54               		.loc 1 13 0
+  55 0012 0895      		ret
+  56               		.cfi_endproc
+  57               	.LFE2:
+  59               	.global	delay_ms
+  61               	delay_ms:
+  62               	.LFB3:
+  14:subs.c        **** 
+  15:subs.c        **** void delay_ms(uint16_t ms)
+  16:subs.c        **** {
+  63               		.loc 1 16 0
+  64               		.cfi_startproc
+  65               	.LVL4:
+  66               	/* prologue: function */
+  67               	/* frame size = 0 */
+  68               	/* stack size = 0 */
+  69               	.L__stack_usage = 0
+  70               	.LBB10:
+  71               	.LBB11:
+  72               		.loc 2 28 0
+  73 0014 20ED      		ldi r18,lo8(-48)
+  74 0016 37E0      		ldi r19,lo8(7)
+  75               	.L7:
+  76               	.LBE11:
+  77               	.LBE10:
+  17:subs.c        ****     while (ms > 0) {
+  78               		.loc 1 17 0
+  79 0018 0097      		sbiw r24,0
+  80 001a 01F0      		breq .L9
+  81               	.LVL5:
+  82               	.LBB13:
+  83               	.LBB12:
+  84               		.loc 2 28 0
+  85 001c F901      		movw r30,r18
+  86               	/* #APP */
+  87               	 ;  28 "subs.h" 1
+  88 001e 3197      		1: sbiw r30,1
+  89 0020 01F4      		brne 1b
+  90               	 ;  0 "" 2
+  91               	.LVL6:
+  92               	/* #NOAPP */
+  93               	.LBE12:
+  94               	.LBE13:
+  18:subs.c        **** 	delay(1000);
+  19:subs.c        **** 	ms--;
+  95               		.loc 1 19 0
+  96 0022 0197      		sbiw r24,1
+  97               	.LVL7:
+  98 0024 00C0      		rjmp .L7
+  99               	.L9:
+ 100               	/* epilogue start */
+  20:subs.c        ****     }
+  21:subs.c        **** //	wdt_reset();
+  22:subs.c        **** }
+ 101               		.loc 1 22 0
+ 102 0026 0895      		ret
+ 103               		.cfi_endproc
+ 104               	.LFE3:
+ 106               	.global	delay_s
+ 108               	delay_s:
+ 109               	.LFB4:
+  23:subs.c        **** 
+  24:subs.c        **** void delay_s(uint8_t s)
+  25:subs.c        **** {
+ 110               		.loc 1 25 0
+ 111               		.cfi_startproc
+ 112               	.LVL8:
+ 113 0028 CF93      		push r28
+ 114               	.LCFI0:
+ 115               		.cfi_def_cfa_offset 3
+ 116               		.cfi_offset 28, -2
+ 117               	/* prologue: function */
+ 118               	/* frame size = 0 */
+ 119               	/* stack size = 1 */
+ 120               	.L__stack_usage = 1
+ 121 002a C82F      		mov r28,r24
+ 122               	.LVL9:
+ 123               	.L11:
+  26:subs.c        ****     while (s > 0) {
+ 124               		.loc 1 26 0
+ 125 002c CC23      		tst r28
+ 126 002e 01F0      		breq .L13
+  27:subs.c        **** 	delay_ms(1000);
+ 127               		.loc 1 27 0
+ 128 0030 88EE      		ldi r24,lo8(-24)
+ 129 0032 93E0      		ldi r25,lo8(3)
+ 130 0034 0E94 0000 		call delay_ms
+ 131               	.LVL10:
+  28:subs.c        **** 	s--;
+ 132               		.loc 1 28 0
+ 133 0038 C150      		subi r28,lo8(-(-1))
+ 134               	.LVL11:
+ 135 003a 00C0      		rjmp .L11
+ 136               	.L13:
+ 137               	/* epilogue start */
+  29:subs.c        ****     }
+  30:subs.c        **** //	wdt_reset();
+  31:subs.c        **** }
+ 138               		.loc 1 31 0
+ 139 003c CF91      		pop r28
+ 140               	.LVL12:
+ 141 003e 0895      		ret
+ 142               		.cfi_endproc
+ 143               	.LFE4:
+ 145               	.global	check_range
+ 147               	check_range:
+ 148               	.LFB5:
+  32:subs.c        **** 
+  33:subs.c        **** int16_t check_range(int16_t min, int16_t in, int16_t max)
+  34:subs.c        **** {
+ 149               		.loc 1 34 0
+ 150               		.cfi_startproc
+ 151               	.LVL13:
+ 152               	/* prologue: function */
+ 153               	/* frame size = 0 */
+ 154               	/* stack size = 0 */
+ 155               	.L__stack_usage = 0
+ 156 0040 F82F      		mov r31,r24
+ 157 0042 E92F      		mov r30,r25
+ 158 0044 9B01      		movw r18,r22
+ 159 0046 4617      		cp r20,r22
+ 160 0048 5707      		cpc r21,r23
+ 161 004a 04F4      		brge .L15
+ 162 004c 9A01      		movw r18,r20
+ 163               	.L15:
+ 164               	.LVL14:
+  35:subs.c        ****     if (in > max)
+  36:subs.c        **** 	in = max;
+  37:subs.c        ****     if (in < min)
+  38:subs.c        **** 	in = min;
+  39:subs.c        ****     return in;
+ 165               		.loc 1 39 0
+ 166 004e 8F2F      		mov r24,r31
+ 167               	.LVL15:
+ 168 0050 9E2F      		mov r25,r30
+ 169 0052 8217      		cp r24,r18
+ 170 0054 9307      		cpc r25,r19
+ 171 0056 04F4      		brge .L16
+ 172 0058 C901      		movw r24,r18
+ 173               	.LVL16:
+ 174               	.L16:
+  40:subs.c        **** }
+ 175               		.loc 1 40 0
+ 176 005a 0895      		ret
+ 177               		.cfi_endproc
+ 178               	.LFE5:
+ 180               	.global	__gtsf2
+ 181               	.global	__ltsf2
+ 182               	.global	check_rangef
+ 184               	check_rangef:
+ 185               	.LFB6:
+  41:subs.c        **** 
+  42:subs.c        **** float check_rangef(float min, float in, float max)
+  43:subs.c        **** {
+ 186               		.loc 1 43 0
+ 187               		.cfi_startproc
+ 188               	.LVL17:
+ 189 005c 8F92      		push r8
+ 190               	.LCFI1:
+ 191               		.cfi_def_cfa_offset 3
+ 192               		.cfi_offset 8, -2
+ 193 005e 9F92      		push r9
+ 194               	.LCFI2:
+ 195               		.cfi_def_cfa_offset 4
+ 196               		.cfi_offset 9, -3
+ 197 0060 AF92      		push r10
+ 198               	.LCFI3:
+ 199               		.cfi_def_cfa_offset 5
+ 200               		.cfi_offset 10, -4
+ 201 0062 BF92      		push r11
+ 202               	.LCFI4:
+ 203               		.cfi_def_cfa_offset 6
+ 204               		.cfi_offset 11, -5
+ 205 0064 CF92      		push r12
+ 206               	.LCFI5:
+ 207               		.cfi_def_cfa_offset 7
+ 208               		.cfi_offset 12, -6
+ 209 0066 DF92      		push r13
+ 210               	.LCFI6:
+ 211               		.cfi_def_cfa_offset 8
+ 212               		.cfi_offset 13, -7
+ 213 0068 EF92      		push r14
+ 214               	.LCFI7:
+ 215               		.cfi_def_cfa_offset 9
+ 216               		.cfi_offset 14, -8
+ 217 006a FF92      		push r15
+ 218               	.LCFI8:
+ 219               		.cfi_def_cfa_offset 10
+ 220               		.cfi_offset 15, -9
+ 221 006c 0F93      		push r16
+ 222               	.LCFI9:
+ 223               		.cfi_def_cfa_offset 11
+ 224               		.cfi_offset 16, -10
+ 225 006e 1F93      		push r17
+ 226               	.LCFI10:
+ 227               		.cfi_def_cfa_offset 12
+ 228               		.cfi_offset 17, -11
+ 229 0070 CF93      		push r28
+ 230               	.LCFI11:
+ 231               		.cfi_def_cfa_offset 13
+ 232               		.cfi_offset 28, -12
+ 233 0072 DF93      		push r29
+ 234               	.LCFI12:
+ 235               		.cfi_def_cfa_offset 14
+ 236               		.cfi_offset 29, -13
+ 237               	/* prologue: function */
+ 238               	/* frame size = 0 */
+ 239               	/* stack size = 12 */
+ 240               	.L__stack_usage = 12
+ 241 0074 4B01      		movw r8,r22
+ 242 0076 5C01      		movw r10,r24
+ 243 0078 6901      		movw r12,r18
+ 244 007a D42F      		mov r29,r20
+ 245 007c C52F      		mov r28,r21
+  44:subs.c        ****     if (in > max)
+ 246               		.loc 1 44 0
+ 247 007e 9701      		movw r18,r14
+ 248               	.LVL18:
+ 249 0080 A801      		movw r20,r16
+ 250 0082 B601      		movw r22,r12
+ 251               	.LVL19:
+ 252 0084 8D2F      		mov r24,r29
+ 253 0086 9C2F      		mov r25,r28
+ 254 0088 0E94 0000 		call __gtsf2
+ 255               	.LVL20:
+ 256 008c 1816      		cp __zero_reg__,r24
+ 257 008e 04F4      		brge .L18
+  45:subs.c        **** 	in = max;
+ 258               		.loc 1 45 0
+ 259 0090 6701      		movw r12,r14
+ 260 0092 D02F      		mov r29,r16
+ 261 0094 C12F      		mov r28,r17
+ 262               	.L18:
+ 263               	.LVL21:
+  46:subs.c        ****     if (in < min)
+ 264               		.loc 1 46 0
+ 265 0096 9401      		movw r18,r8
+ 266 0098 A501      		movw r20,r10
+ 267 009a B601      		movw r22,r12
+ 268 009c 8D2F      		mov r24,r29
+ 269 009e 9C2F      		mov r25,r28
+ 270 00a0 0E94 0000 		call __ltsf2
+ 271               	.LVL22:
+ 272 00a4 87FF      		sbrs r24,7
+ 273 00a6 00C0      		rjmp .L20
+  47:subs.c        **** 	in = min;
+ 274               		.loc 1 47 0
+ 275 00a8 6401      		movw r12,r8
+ 276               	.LVL23:
+ 277 00aa DA2D      		mov r29,r10
+ 278 00ac CB2D      		mov r28,r11
+ 279               	.L20:
+ 280               	.LVL24:
+  48:subs.c        ****     return in;
+  49:subs.c        **** }
+ 281               		.loc 1 49 0
+ 282 00ae B601      		movw r22,r12
+ 283 00b0 8D2F      		mov r24,r29
+ 284 00b2 9C2F      		mov r25,r28
+ 285               	/* epilogue start */
+ 286 00b4 DF91      		pop r29
+ 287               	.LVL25:
+ 288 00b6 CF91      		pop r28
+ 289               	.LVL26:
+ 290 00b8 1F91      		pop r17
+ 291 00ba 0F91      		pop r16
+ 292 00bc FF90      		pop r15
+ 293 00be EF90      		pop r14
+ 294               	.LVL27:
+ 295 00c0 DF90      		pop r13
+ 296               	.LVL28:
+ 297 00c2 CF90      		pop r12
+ 298 00c4 BF90      		pop r11
+ 299 00c6 AF90      		pop r10
+ 300 00c8 9F90      		pop r9
+ 301 00ca 8F90      		pop r8
+ 302 00cc 0895      		ret
+ 303               		.cfi_endproc
+ 304               	.LFE6:
+ 306               	.global	delay_btn_check
+ 308               	delay_btn_check:
+ 309               	.LFB7:
+  50:subs.c        **** 
+  51:subs.c        **** int8_t delay_btn_check(int8_t *delay_var)
+  52:subs.c        **** {
+ 310               		.loc 1 52 0
+ 311               		.cfi_startproc
+ 312               	.LVL29:
+ 313               	/* prologue: function */
+ 314               	/* frame size = 0 */
+ 315               	/* stack size = 0 */
+ 316               	.L__stack_usage = 0
+ 317 00ce FC01      		movw r30,r24
+  53:subs.c        ****     if (*delay_var) {
+ 318               		.loc 1 53 0
+ 319 00d0 8081      		ld r24,Z
+ 320               	.LVL30:
+ 321 00d2 8823      		tst r24
+ 322 00d4 01F0      		breq .L25
+  54:subs.c        **** 	if (*delay_var > BTN_LONG_DELAY) {
+ 323               		.loc 1 54 0
+ 324 00d6 8330      		cpi r24,lo8(3)
+ 325 00d8 04F0      		brlt .L27
+  55:subs.c        **** 	    *delay_var = 0;
+ 326               		.loc 1 55 0
+ 327 00da 1082      		st Z,__zero_reg__
+  56:subs.c        **** 	    return 1;
+ 328               		.loc 1 56 0
+ 329 00dc 81E0      		ldi r24,lo8(1)
+ 330 00de 0895      		ret
+ 331               	.L25:
+  57:subs.c        **** 	}
+  58:subs.c        ****     } else {
+  59:subs.c        **** 	*delay_var = 1;
+ 332               		.loc 1 59 0
+ 333 00e0 91E0      		ldi r25,lo8(1)
+ 334 00e2 9083      		st Z,r25
+ 335 00e4 0895      		ret
+ 336               	.L27:
+  60:subs.c        ****     }
+  61:subs.c        ****     return 0;
+ 337               		.loc 1 61 0
+ 338 00e6 80E0      		ldi r24,0
+  62:subs.c        **** }
+ 339               		.loc 1 62 0
+ 340 00e8 0895      		ret
+ 341               		.cfi_endproc
+ 342               	.LFE7:
+ 344               	.global	num_to_str
+ 346               	num_to_str:
+ 347               	.LFB8:
+  63:subs.c        **** 
+  64:subs.c        **** void num_to_str(struct m2bytes *nbuf)
+  65:subs.c        **** {
+ 348               		.loc 1 65 0
+ 349               		.cfi_startproc
+ 350               	.LVL31:
+ 351               	/* prologue: function */
+ 352               	/* frame size = 0 */
+ 353               	/* stack size = 0 */
+ 354               	.L__stack_usage = 0
+ 355 00ea FC01      		movw r30,r24
+  66:subs.c        ****     uint8_t tmp, num;
+  67:subs.c        **** //m2bytes nbuf;
+  68:subs.c        **** 
+  69:subs.c        ****     num = nbuf->one;
+ 356               		.loc 1 69 0
+ 357 00ec 2081      		ld r18,Z
+ 358 00ee 2436      		cpi r18,lo8(100)
+ 359 00f0 00F0      		brlo .L29
+ 360 00f2 23E6      		ldi r18,lo8(99)
+ 361               	.L29:
+ 362               	.LVL32:
+  70:subs.c        ****     if (num > 99)
+  71:subs.c        **** 	num = 99;
+  72:subs.c        ****     tmp = num / 10;
+ 363               		.loc 1 72 0
+ 364 00f4 822F      		mov r24,r18
+ 365               	.LVL33:
+ 366 00f6 6AE0      		ldi r22,lo8(10)
+ 367 00f8 0E94 0000 		call __udivmodqi4
+ 368               	.LVL34:
+  73:subs.c        ****     nbuf->one = tmp + '0';
+ 369               		.loc 1 73 0
+ 370 00fc 90E3      		ldi r25,lo8(48)
+ 371 00fe 980F      		add r25,r24
+ 372 0100 9083      		st Z,r25
+ 373               	.LVL35:
+  74:subs.c        ****     num -= tmp * 10;
+  75:subs.c        ****     nbuf->two = num + '0';
+ 374               		.loc 1 75 0
+ 375 0102 205D      		subi r18,lo8(-(48))
+ 376               	.LVL36:
+ 377 0104 9AE0      		ldi r25,lo8(10)
+ 378 0106 899F      		mul r24,r25
+ 379 0108 2019      		sub r18,r0
+ 380 010a 1124      		clr __zero_reg__
+ 381               	.LVL37:
+ 382 010c 2183      		std Z+1,r18
+ 383 010e 0895      		ret
+ 384               		.cfi_endproc
+ 385               	.LFE8:
+ 387               	.global	SPI_SendByte
+ 389               	SPI_SendByte:
+ 390               	.LFB9:
+  76:subs.c        **** }
+  77:subs.c        **** /*
+  78:subs.c        ****  void num_to_lcd(uint8_t fs,uint8_t num)
+  79:subs.c        ****  {
+  80:subs.c        ****  struct m2bytes nbuf;
+  81:subs.c        **** 
+  82:subs.c        ****  nbuf.one = num;
+  83:subs.c        ****  num_to_str(&nbuf);
+  84:subs.c        ****  LcdChr(fs,nbuf.one,0);
+  85:subs.c        ****  LcdChr(fs,nbuf.two,0);
+  86:subs.c        ****  }
+  87:subs.c        ****  */
+  88:subs.c        **** 
+  89:subs.c        **** void SPI_SendByte(int8_t byte)
+  90:subs.c        **** {
+ 391               		.loc 1 90 0
+ 392               		.cfi_startproc
+ 393               	.LVL38:
+ 394               	/* prologue: function */
+ 395               	/* frame size = 0 */
+ 396               	/* stack size = 0 */
+ 397               	.L__stack_usage = 0
+  91:subs.c        ****     SPDR = byte;
+ 398               		.loc 1 91 0
+ 399 0110 8EBD      		out 0x2e,r24
+ 400               	.L31:
+  92:subs.c        ****     while (!(SPSR & (1 << SPIF)))
+ 401               		.loc 1 92 0 discriminator 1
+ 402 0112 0DB4      		in __tmp_reg__,0x2d
+ 403 0114 07FE      		sbrs __tmp_reg__,7
+ 404 0116 00C0      		rjmp .L31
+ 405               	/* epilogue start */
+  93:subs.c        **** 	;
+  94:subs.c        **** }
+ 406               		.loc 1 94 0
+ 407 0118 0895      		ret
+ 408               		.cfi_endproc
+ 409               	.LFE9:
+ 411               	.global	SPI_init
+ 413               	SPI_init:
+ 414               	.LFB10:
+  95:subs.c        **** 
+  96:subs.c        **** void SPI_init(void)
+  97:subs.c        **** {
+ 415               		.loc 1 97 0
+ 416               		.cfi_startproc
+ 417               	/* prologue: function */
+ 418               	/* frame size = 0 */
+ 419               	/* stack size = 0 */
+ 420               	.L__stack_usage = 0
+  98:subs.c        **** //    PORTB &= ~((1 << PORTB3) | (1 << PORTB5)); //низкий уровень
+  99:subs.c        **** //    PORTB |= (1 << PORTB2);
+ 100:subs.c        ****     pin_high(SPI_SS);
+ 421               		.loc 1 100 0
+ 422 011a 2A9A      		sbi 0x5,2
+ 101:subs.c        ****     pin_low(SPI_MOSI);
+ 423               		.loc 1 101 0
+ 424 011c 2B98      		cbi 0x5,3
+ 102:subs.c        ****     pin_low(SPI_SCK);
+ 425               		.loc 1 102 0
+ 426 011e 2D98      		cbi 0x5,5
+ 103:subs.c        **** 
+ 104:subs.c        ****     //    DDRB = DDRB & ~((1 << PORTB2) | (1 << PORTB3) | (1 << PORTB4) | (1 << PORTB5));
+ 105:subs.c        ****     //    DDRB |= ((1 << PORTB2) | (1 << PORTB3) | (1 << PORTB5)); //ножки SPI на выход
+ 106:subs.c        ****     set_dir_in(SPI_MISO);
+ 427               		.loc 1 106 0
+ 428 0120 2498      		cbi 0x4,4
+ 107:subs.c        ****     set_dir_out(SPI_MOSI);
+ 429               		.loc 1 107 0
+ 430 0122 239A      		sbi 0x4,3
+ 108:subs.c        ****     set_dir_out(SPI_SS);
+ 431               		.loc 1 108 0
+ 432 0124 229A      		sbi 0x4,2
+ 109:subs.c        ****     set_dir_out(SPI_SCK);
+ 433               		.loc 1 109 0
+ 434 0126 259A      		sbi 0x4,5
+ 110:subs.c        **** 
+ 111:subs.c        ****     //SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0); //включим шину, объ¤вим в�
+ 112:subs.c        ****     /*разрешение spi,старший бит вперед,мастер, режим 0*/
+ 113:subs.c        ****     SPCR = (1 << SPE) | (0 << DORD) | (1 << MSTR) | (0 << CPOL) | (0 << CPHA) | (0 << SPR1) | (0 <<
+ 435               		.loc 1 113 0
+ 436 0128 80E5      		ldi r24,lo8(80)
+ 437 012a 8CBD      		out 0x2c,r24
+ 114:subs.c        ****     SPSR = 0;    //(0 << SPI2X);
+ 438               		.loc 1 114 0
+ 439 012c 1DBC      		out 0x2d,__zero_reg__
+ 440 012e 0895      		ret
+ 441               		.cfi_endproc
+ 442               	.LFE10:
+ 444               	.global	SPI_deInit
+ 446               	SPI_deInit:
+ 447               	.LFB11:
+ 115:subs.c        **** }
+ 116:subs.c        **** 
+ 117:subs.c        **** void SPI_deInit()
+ 118:subs.c        **** {
+ 448               		.loc 1 118 0
+ 449               		.cfi_startproc
+ 450               	/* prologue: function */
+ 451               	/* frame size = 0 */
+ 452               	/* stack size = 0 */
+ 453               	.L__stack_usage = 0
+ 119:subs.c        ****     SPCR = 0;
+ 454               		.loc 1 119 0
+ 455 0130 1CBC      		out 0x2c,__zero_reg__
+ 120:subs.c        ****     set_dir_in(SPI_MISO);
+ 456               		.loc 1 120 0
+ 457 0132 2498      		cbi 0x4,4
+ 121:subs.c        ****     set_dir_in(SPI_MOSI);
+ 458               		.loc 1 121 0
+ 459 0134 2398      		cbi 0x4,3
+ 122:subs.c        ****     set_dir_in(SPI_SS);
+ 460               		.loc 1 122 0
+ 461 0136 2298      		cbi 0x4,2
+ 123:subs.c        ****     set_dir_in(SPI_SCK);
+ 462               		.loc 1 123 0
+ 463 0138 2598      		cbi 0x4,5
+ 464 013a 0895      		ret
+ 465               		.cfi_endproc
+ 466               	.LFE11:
+ 468               	.global	ADC_Init
+ 470               	ADC_Init:
+ 471               	.LFB12:
+ 124:subs.c        **** }
+ 125:subs.c        **** 
+ 126:subs.c        **** void ADC_Init()
+ 127:subs.c        **** {
+ 472               		.loc 1 127 0
+ 473               		.cfi_startproc
+ 474               	/* prologue: function */
+ 475               	/* frame size = 0 */
+ 476               	/* stack size = 0 */
+ 477               	.L__stack_usage = 0
+ 128:subs.c        ****     ADCSRA = (1 << ADEN) // Включаем АЦП
+ 478               		.loc 1 128 0
+ 479 013c 83E8      		ldi r24,lo8(-125)
+ 480 013e 8093 7A00 		sts 122,r24
+ 129:subs.c        ****     | (1 << ADPS1) | (1 << ADPS0);    // устанавливаем предделитель пре
+ 130:subs.c        ****     ADMUX = (1 << REFS1) | (1 << REFS0); //Подключен внутренний ион 1.1В, с
+ 481               		.loc 1 130 0
+ 482 0142 80EC      		ldi r24,lo8(-64)
+ 483 0144 8093 7C00 		sts 124,r24
+ 484 0148 0895      		ret
+ 485               		.cfi_endproc
+ 486               	.LFE12:
+ 488               	.global	ADC_Mux
+ 490               	ADC_Mux:
+ 491               	.LFB13:
+ 131:subs.c        **** }
+ 132:subs.c        **** 
+ 133:subs.c        **** void ADC_Mux(adc_in_type input)
+ 134:subs.c        **** {
+ 492               		.loc 1 134 0
+ 493               		.cfi_startproc
+ 494               	.LVL39:
+ 495               	/* prologue: function */
+ 496               	/* frame size = 0 */
+ 497               	/* stack size = 0 */
+ 498               	.L__stack_usage = 0
+ 135:subs.c        ****     ADMUX &= ~(0b1111);
+ 499               		.loc 1 135 0
+ 500 014a ECE7      		ldi r30,lo8(124)
+ 501 014c F0E0      		ldi r31,0
+ 502 014e 9081      		ld r25,Z
+ 503 0150 907F      		andi r25,lo8(-16)
+ 504 0152 9083      		st Z,r25
+ 136:subs.c        ****     ADMUX |= (input & 0b1111);
+ 505               		.loc 1 136 0
+ 506 0154 9081      		ld r25,Z
+ 507 0156 8F70      		andi r24,lo8(15)
+ 508               	.LVL40:
+ 509 0158 982B      		or r25,r24
+ 510 015a 9083      		st Z,r25
+ 137:subs.c        ****     delay_ms(1); // TODO
+ 511               		.loc 1 137 0
+ 512 015c 81E0      		ldi r24,lo8(1)
+ 513 015e 90E0      		ldi r25,0
+ 514 0160 0C94 0000 		jmp delay_ms
+ 515               	.LVL41:
+ 516               		.cfi_endproc
+ 517               	.LFE13:
+ 519               	.global	ADC_Start
+ 521               	ADC_Start:
+ 522               	.LFB14:
+ 138:subs.c        **** }
+ 139:subs.c        **** 
+ 140:subs.c        **** void ADC_Start()
+ 141:subs.c        **** {
+ 523               		.loc 1 141 0
+ 524               		.cfi_startproc
+ 525               	/* prologue: function */
+ 526               	/* frame size = 0 */
+ 527               	/* stack size = 0 */
+ 528               	.L__stack_usage = 0
+ 142:subs.c        ****     ADCSRA |= (1 << ADSC);    // Начинаем преобразование
+ 529               		.loc 1 142 0
+ 530 0164 EAE7      		ldi r30,lo8(122)
+ 531 0166 F0E0      		ldi r31,0
+ 532 0168 8081      		ld r24,Z
+ 533 016a 8064      		ori r24,lo8(64)
+ 534 016c 8083      		st Z,r24
+ 535 016e 0895      		ret
+ 536               		.cfi_endproc
+ 537               	.LFE14:
+ 539               	.global	ADC_GetData
+ 541               	ADC_GetData:
+ 542               	.LFB15:
+ 143:subs.c        **** }
+ 144:subs.c        **** 
+ 145:subs.c        **** uint16_t ADC_GetData()
+ 146:subs.c        **** {
+ 543               		.loc 1 146 0
+ 544               		.cfi_startproc
+ 545               	/* prologue: function */
+ 546               	/* frame size = 0 */
+ 547               	/* stack size = 0 */
+ 548               	.L__stack_usage = 0
+ 147:subs.c        ****     return (ADCL | ADCH << 8); // Считываем  полученное значение
+ 549               		.loc 1 147 0
+ 550 0170 8091 7800 		lds r24,120
+ 551 0174 2091 7900 		lds r18,121
+ 552 0178 90E0      		ldi r25,0
+ 148:subs.c        **** }
+ 553               		.loc 1 148 0
+ 554 017a 922B      		or r25,r18
+ 555 017c 0895      		ret
+ 556               		.cfi_endproc
+ 557               	.LFE15:
+ 559               	.global	eeprom_write_byte1
+ 561               	eeprom_write_byte1:
+ 562               	.LFB16:
+ 149:subs.c        **** 
+ 150:subs.c        **** void eeprom_write_byte1(uint16_t addr, uint8_t data)
+ 151:subs.c        **** {
+ 563               		.loc 1 151 0
+ 564               		.cfi_startproc
+ 565               	/* prologue: function */
+ 566               	/* frame size = 0 */
+ 567               	/* stack size = 0 */
+ 568               	.L__stack_usage = 0
+ 569               	.LVL42:
+ 570               	.L40:
+ 152:subs.c        ****     /*wait until previous write any*/
+ 153:subs.c        ****     while (EECR & (1 << EEPE))
+ 571               		.loc 1 153 0 discriminator 1
+ 572 017e F999      		sbic 0x1f,1
+ 573 0180 00C0      		rjmp .L40
+ 154:subs.c        **** 	;
+ 155:subs.c        ****     EEAR = addr;
+ 574               		.loc 1 155 0
+ 575 0182 92BD      		out 0x21+1,r25
+ 576 0184 81BD      		out 0x21,r24
+ 156:subs.c        ****     EEDR = data;
+ 577               		.loc 1 156 0
+ 578 0186 60BD      		out 0x20,r22
+ 157:subs.c        ****     EECR |= (1 << EEMPE);
+ 579               		.loc 1 157 0
+ 580 0188 FA9A      		sbi 0x1f,2
+ 158:subs.c        ****     EECR |= (1 << EEPE);
+ 581               		.loc 1 158 0
+ 582 018a F99A      		sbi 0x1f,1
+ 583 018c 0895      		ret
+ 584               		.cfi_endproc
+ 585               	.LFE16:
+ 587               	.global	eeprom_read_byte1
+ 589               	eeprom_read_byte1:
+ 590               	.LFB17:
+ 159:subs.c        **** }
+ 160:subs.c        **** 
+ 161:subs.c        **** uint8_t eeprom_read_byte1(uint16_t addr)
+ 162:subs.c        **** {
+ 591               		.loc 1 162 0
+ 592               		.cfi_startproc
+ 593               	/* prologue: function */
+ 594               	/* frame size = 0 */
+ 595               	/* stack size = 0 */
+ 596               	.L__stack_usage = 0
+ 597               	.LVL43:
+ 598               	.L43:
+ 163:subs.c        ****     /*wait until previous write any*/
+ 164:subs.c        ****     while (EECR & (1 << EEPE))
+ 599               		.loc 1 164 0 discriminator 1
+ 600 018e F999      		sbic 0x1f,1
+ 601 0190 00C0      		rjmp .L43
+ 165:subs.c        **** 	;
+ 166:subs.c        ****     EEAR = addr;
+ 602               		.loc 1 166 0
+ 603 0192 92BD      		out 0x21+1,r25
+ 604 0194 81BD      		out 0x21,r24
+ 167:subs.c        ****     EECR |= (1 << EERE);
+ 605               		.loc 1 167 0
+ 606 0196 F89A      		sbi 0x1f,0
+ 168:subs.c        ****     return EEDR;
+ 607               		.loc 1 168 0
+ 608 0198 80B5      		in r24,0x20
+ 609               	.LVL44:
+ 169:subs.c        **** }
+ 610               		.loc 1 169 0
+ 611 019a 0895      		ret
+ 612               		.cfi_endproc
+ 613               	.LFE17:
+ 615               	.global	eeprom_read_buf
+ 617               	eeprom_read_buf:
+ 618               	.LFB18:
+ 170:subs.c        **** 
+ 171:subs.c        **** void eeprom_read_buf(uint8_t *data, uint16_t addr, uint16_t len)
+ 172:subs.c        **** {
+ 619               		.loc 1 172 0
+ 620               		.cfi_startproc
+ 621               	.LVL45:
+ 622 019c EF92      		push r14
+ 623               	.LCFI13:
+ 624               		.cfi_def_cfa_offset 3
+ 625               		.cfi_offset 14, -2
+ 626 019e FF92      		push r15
+ 627               	.LCFI14:
+ 628               		.cfi_def_cfa_offset 4
+ 629               		.cfi_offset 15, -3
+ 630 01a0 0F93      		push r16
+ 631               	.LCFI15:
+ 632               		.cfi_def_cfa_offset 5
+ 633               		.cfi_offset 16, -4
+ 634 01a2 1F93      		push r17
+ 635               	.LCFI16:
+ 636               		.cfi_def_cfa_offset 6
+ 637               		.cfi_offset 17, -5
+ 638 01a4 CF93      		push r28
+ 639               	.LCFI17:
+ 640               		.cfi_def_cfa_offset 7
+ 641               		.cfi_offset 28, -6
+ 642 01a6 DF93      		push r29
+ 643               	.LCFI18:
+ 644               		.cfi_def_cfa_offset 8
+ 645               		.cfi_offset 29, -7
+ 646               	/* prologue: function */
+ 647               	/* frame size = 0 */
+ 648               	/* stack size = 6 */
+ 649               	.L__stack_usage = 6
+ 650               	.LVL46:
+ 651 01a8 8C01      		movw r16,r24
+ 652 01aa 040F      		add r16,r20
+ 653 01ac 151F      		adc r17,r21
+ 654               	.LBB14:
+ 173:subs.c        ****     for (uint16_t i = 0; i < len; i++) {
+ 655               		.loc 1 173 0
+ 656 01ae EC01      		movw r28,r24
+ 174:subs.c        **** 	data[i] = eeprom_read_byte1(addr + i);
+ 657               		.loc 1 174 0
+ 658 01b0 7B01      		movw r14,r22
+ 659 01b2 E81A      		sub r14,r24
+ 660 01b4 F90A      		sbc r15,r25
+ 661               	.LVL47:
+ 662               	.L46:
+ 173:subs.c        ****     for (uint16_t i = 0; i < len; i++) {
+ 663               		.loc 1 173 0 discriminator 1
+ 664 01b6 C017      		cp r28,r16
+ 665 01b8 D107      		cpc r29,r17
+ 666 01ba 01F0      		breq .L49
+ 667               		.loc 1 174 0 discriminator 3
+ 668 01bc C701      		movw r24,r14
+ 669 01be 8C0F      		add r24,r28
+ 670 01c0 9D1F      		adc r25,r29
+ 671 01c2 0E94 0000 		call eeprom_read_byte1
+ 672               	.LVL48:
+ 673 01c6 8993      		st Y+,r24
+ 674               	.LVL49:
+ 675 01c8 00C0      		rjmp .L46
+ 676               	.L49:
+ 677               	.LBE14:
+ 175:subs.c        ****     }
+ 176:subs.c        ****     while (EECR & (1 << EEPE))
+ 678               		.loc 1 176 0 discriminator 1
+ 679 01ca F999      		sbic 0x1f,1
+ 680 01cc 00C0      		rjmp .L49
+ 681               	/* epilogue start */
+ 177:subs.c        **** 	;
+ 178:subs.c        **** }
+ 682               		.loc 1 178 0
+ 683 01ce DF91      		pop r29
+ 684 01d0 CF91      		pop r28
+ 685               	.LVL50:
+ 686 01d2 1F91      		pop r17
+ 687 01d4 0F91      		pop r16
+ 688 01d6 FF90      		pop r15
+ 689 01d8 EF90      		pop r14
+ 690 01da 0895      		ret
+ 691               		.cfi_endproc
+ 692               	.LFE18:
+ 694               	.global	eeprom_update_buf
+ 696               	eeprom_update_buf:
+ 697               	.LFB19:
+ 179:subs.c        **** 
+ 180:subs.c        **** void eeprom_update_buf(uint16_t addr, uint8_t *data, uint16_t len)
+ 181:subs.c        **** {
+ 698               		.loc 1 181 0
+ 699               		.cfi_startproc
+ 700               	.LVL51:
+ 701 01dc CF92      		push r12
+ 702               	.LCFI19:
+ 703               		.cfi_def_cfa_offset 3
+ 704               		.cfi_offset 12, -2
+ 705 01de DF92      		push r13
+ 706               	.LCFI20:
+ 707               		.cfi_def_cfa_offset 4
+ 708               		.cfi_offset 13, -3
+ 709 01e0 EF92      		push r14
+ 710               	.LCFI21:
+ 711               		.cfi_def_cfa_offset 5
+ 712               		.cfi_offset 14, -4
+ 713 01e2 FF92      		push r15
+ 714               	.LCFI22:
+ 715               		.cfi_def_cfa_offset 6
+ 716               		.cfi_offset 15, -5
+ 717 01e4 0F93      		push r16
+ 718               	.LCFI23:
+ 719               		.cfi_def_cfa_offset 7
+ 720               		.cfi_offset 16, -6
+ 721 01e6 1F93      		push r17
+ 722               	.LCFI24:
+ 723               		.cfi_def_cfa_offset 8
+ 724               		.cfi_offset 17, -7
+ 725 01e8 CF93      		push r28
+ 726               	.LCFI25:
+ 727               		.cfi_def_cfa_offset 9
+ 728               		.cfi_offset 28, -8
+ 729 01ea DF93      		push r29
+ 730               	.LCFI26:
+ 731               		.cfi_def_cfa_offset 10
+ 732               		.cfi_offset 29, -9
+ 733               	/* prologue: function */
+ 734               	/* frame size = 0 */
+ 735               	/* stack size = 8 */
+ 736               	.L__stack_usage = 8
+ 737               	.LVL52:
+ 738 01ec 8B01      		movw r16,r22
+ 739 01ee 040F      		add r16,r20
+ 740 01f0 151F      		adc r17,r21
+ 741               	.LBB15:
+ 182:subs.c        ****     for (uint16_t i = 0; i < len; i++) {
+ 742               		.loc 1 182 0
+ 743 01f2 EB01      		movw r28,r22
+ 744 01f4 6C01      		movw r12,r24
+ 745 01f6 C61A      		sub r12,r22
+ 746 01f8 D70A      		sbc r13,r23
+ 747               	.LVL53:
+ 748               	.L52:
+ 749               		.loc 1 182 0 is_stmt 0 discriminator 1
+ 750 01fa C017      		cp r28,r16
+ 751 01fc D107      		cpc r29,r17
+ 752 01fe 01F0      		breq .L56
+ 753 0200 7601      		movw r14,r12
+ 754 0202 EC0E      		add r14,r28
+ 755 0204 FD1E      		adc r15,r29
+ 756               	.LBB16:
+ 183:subs.c        **** 	uint8_t b = eeprom_read_byte1(addr + i);
+ 757               		.loc 1 183 0 is_stmt 1
+ 758 0206 C701      		movw r24,r14
+ 759 0208 0E94 0000 		call eeprom_read_byte1
+ 760               	.LVL54:
+ 184:subs.c        **** 	if (b != data[i]) {
+ 761               		.loc 1 184 0
+ 762 020c 6991      		ld r22,Y+
+ 763               	.LVL55:
+ 764 020e 8617      		cp r24,r22
+ 765 0210 01F0      		breq .L52
+ 185:subs.c        **** 	    eeprom_write_byte1(addr + i, data[i]);
+ 766               		.loc 1 185 0
+ 767 0212 C701      		movw r24,r14
+ 768               	.LVL56:
+ 769 0214 0E94 0000 		call eeprom_write_byte1
+ 770               	.LVL57:
+ 771 0218 00C0      		rjmp .L52
+ 772               	.L56:
+ 773               	.LBE16:
+ 774               	.LBE15:
+ 186:subs.c        **** 	}
+ 187:subs.c        ****     }
+ 188:subs.c        ****     while (EECR & (1 << EEPE))
+ 775               		.loc 1 188 0 discriminator 1
+ 776 021a F999      		sbic 0x1f,1
+ 777 021c 00C0      		rjmp .L56
+ 778               	/* epilogue start */
+ 189:subs.c        **** 	;
+ 190:subs.c        **** }
+ 779               		.loc 1 190 0
+ 780 021e DF91      		pop r29
+ 781 0220 CF91      		pop r28
+ 782               	.LVL58:
+ 783 0222 1F91      		pop r17
+ 784 0224 0F91      		pop r16
+ 785 0226 FF90      		pop r15
+ 786 0228 EF90      		pop r14
+ 787 022a DF90      		pop r13
+ 788 022c CF90      		pop r12
+ 789 022e 0895      		ret
+ 790               		.cfi_endproc
+ 791               	.LFE19:
+ 793               	.Letext0:
+ 794               		.file 3 "/usr/lib/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 subs.c
+     /tmp/ccqJistV.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccqJistV.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccqJistV.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccqJistV.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccqJistV.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccqJistV.s:12     .text:0000000000000000 delay_ms0
+     /tmp/ccqJistV.s:61     .text:0000000000000014 delay_ms
+     /tmp/ccqJistV.s:108    .text:0000000000000028 delay_s
+     /tmp/ccqJistV.s:147    .text:0000000000000040 check_range
+     /tmp/ccqJistV.s:184    .text:000000000000005c check_rangef
+     /tmp/ccqJistV.s:308    .text:00000000000000ce delay_btn_check
+     /tmp/ccqJistV.s:346    .text:00000000000000ea num_to_str
+     /tmp/ccqJistV.s:389    .text:0000000000000110 SPI_SendByte
+     /tmp/ccqJistV.s:413    .text:000000000000011a SPI_init
+     /tmp/ccqJistV.s:446    .text:0000000000000130 SPI_deInit
+     /tmp/ccqJistV.s:470    .text:000000000000013c ADC_Init
+     /tmp/ccqJistV.s:490    .text:000000000000014a ADC_Mux
+     /tmp/ccqJistV.s:521    .text:0000000000000164 ADC_Start
+     /tmp/ccqJistV.s:541    .text:0000000000000170 ADC_GetData
+     /tmp/ccqJistV.s:561    .text:000000000000017e eeprom_write_byte1
+     /tmp/ccqJistV.s:589    .text:000000000000018e eeprom_read_byte1
+     /tmp/ccqJistV.s:617    .text:000000000000019c eeprom_read_buf
+     /tmp/ccqJistV.s:696    .text:00000000000001dc eeprom_update_buf
+
+UNDEFINED SYMBOLS
+__gtsf2
+__ltsf2
+__udivmodqi4

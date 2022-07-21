@@ -1,0 +1,745 @@
+   1               		.file	"disp.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	Send_7219
+  12               	Send_7219:
+  13               	.LFB6:
+  14               		.file 1 "disp.c"
+   1:disp.c        **** #include "subs.h"
+   2:disp.c        **** #include <avr/pgmspace.h>
+   3:disp.c        **** #include "disp.h"
+   4:disp.c        **** #include "io.h"
+   5:disp.c        **** #include <stdlib.h>
+   6:disp.c        **** 
+   7:disp.c        **** void Send_7219(int8_t rg, int8_t dt)
+   8:disp.c        **** {
+  15               		.loc 1 8 0
+  16               		.cfi_startproc
+  17               	.LVL0:
+  18 0000 1F93      		push r17
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 17, -2
+  22 0002 CF93      		push r28
+  23               	.LCFI1:
+  24               		.cfi_def_cfa_offset 4
+  25               		.cfi_offset 28, -3
+  26 0004 DF93      		push r29
+  27               	.LCFI2:
+  28               		.cfi_def_cfa_offset 5
+  29               		.cfi_offset 29, -4
+  30               	/* prologue: function */
+  31               	/* frame size = 0 */
+  32               	/* stack size = 3 */
+  33               	.L__stack_usage = 3
+  34 0006 162F      		mov r17,r22
+   9:disp.c        ****     pin_low(SPI_SS);
+  35               		.loc 1 9 0
+  36 0008 2A98      		cbi 0x5,2
+  37               	.LVL1:
+  38               	.LBB6:
+  39               	.LBB7:
+  40               		.file 2 "subs.h"
+   1:subs.h        **** //#include <avr/wdt.h>
+   2:subs.h        **** #define XTAL F_CPU
+   3:subs.h        **** #include <stdint.h>
+   4:subs.h        **** #include <avr/interrupt.h>
+   5:subs.h        **** 
+   6:subs.h        **** #define BTN_LONG_DELAY	2
+   7:subs.h        **** 
+   8:subs.h        **** typedef enum {
+   9:subs.h        ****     ADC0=0,
+  10:subs.h        ****     ADC1 =1,
+  11:subs.h        ****     ADC2 =2,
+  12:subs.h        ****     ADC3 =3,
+  13:subs.h        ****     ADC4 =4,
+  14:subs.h        ****     ADC5 =5,
+  15:subs.h        ****     ADC6 =6,
+  16:subs.h        ****     ADC7 =7
+  17:subs.h        **** } adc_in_type;
+  18:subs.h        **** 
+  19:subs.h        **** /*************************************************************************
+  20:subs.h        ****  delay loop for small accurate delays: 16-bit counter, 4 cycles/loop
+  21:subs.h        ****  *************************************************************************/
+  22:subs.h        **** static inline void _delayFourCycles(uint16_t __count)
+  23:subs.h        **** {
+  24:subs.h        ****     if (__count == 0)
+  25:subs.h        **** 	__asm__ __volatile__( "rjmp 1f\n 1:" );
+  26:subs.h        ****     // 2 cycles
+  27:subs.h        ****     else
+  28:subs.h        **** 	__asm__ __volatile__ (
+  41               		.loc 2 28 0
+  42 000a C2E0      		ldi r28,lo8(2)
+  43 000c D0E0      		ldi r29,0
+  44 000e FE01      		movw r30,r28
+  45               	/* #APP */
+  46               	 ;  28 "subs.h" 1
+  47 0010 3197      		1: sbiw r30,1
+  48 0012 01F4      		brne 1b
+  49               	 ;  0 "" 2
+  50               	.LVL2:
+  51               	/* #NOAPP */
+  52               	.LBE7:
+  53               	.LBE6:
+  10:disp.c        ****     delay(1);
+  11:disp.c        ****     SPI_SendByte(rg);
+  54               		.loc 1 11 0
+  55 0014 0E94 0000 		call SPI_SendByte
+  56               	.LVL3:
+  12:disp.c        ****     SPI_SendByte(dt);
+  57               		.loc 1 12 0
+  58 0018 812F      		mov r24,r17
+  59 001a 0E94 0000 		call SPI_SendByte
+  60               	.LVL4:
+  61               	.LBB8:
+  62               	.LBB9:
+  63               		.loc 2 28 0
+  64               	/* #APP */
+  65               	 ;  28 "subs.h" 1
+  66 001e 2197      		1: sbiw r28,1
+  67 0020 01F4      		brne 1b
+  68               	 ;  0 "" 2
+  69               	.LVL5:
+  70               	/* #NOAPP */
+  71               	.LBE9:
+  72               	.LBE8:
+  13:disp.c        ****     delay(1);
+  14:disp.c        ****     pin_high(SPI_SS);
+  73               		.loc 1 14 0
+  74 0022 2A9A      		sbi 0x5,2
+  75               	/* epilogue start */
+  15:disp.c        **** }
+  76               		.loc 1 15 0
+  77 0024 DF91      		pop r29
+  78 0026 CF91      		pop r28
+  79 0028 1F91      		pop r17
+  80               	.LVL6:
+  81 002a 0895      		ret
+  82               		.cfi_endproc
+  83               	.LFE6:
+  85               	.global	Clear_7219
+  87               	Clear_7219:
+  88               	.LFB7:
+  16:disp.c        **** 
+  17:disp.c        **** void Clear_7219(void)
+  18:disp.c        **** {
+  89               		.loc 1 18 0
+  90               		.cfi_startproc
+  91 002c CF93      		push r28
+  92               	.LCFI3:
+  93               		.cfi_def_cfa_offset 3
+  94               		.cfi_offset 28, -2
+  95               	/* prologue: function */
+  96               	/* frame size = 0 */
+  97               	/* stack size = 1 */
+  98               	.L__stack_usage = 1
+  99               	.LVL7:
+  19:disp.c        ****     int8_t i = DISP_LEN;
+ 100               		.loc 1 19 0
+ 101 002e C4E0      		ldi r28,lo8(4)
+ 102               	.LVL8:
+ 103               	.L3:
+  20:disp.c        ****     // Loop until 0, but don't run for zero
+  21:disp.c        ****     do {
+  22:disp.c        **** 	// Set each display in use to blank
+  23:disp.c        **** 	Send_7219(i, 0xF); //int8_t BLANK
+ 104               		.loc 1 23 0 discriminator 1
+ 105 0030 6FE0      		ldi r22,lo8(15)
+ 106 0032 8C2F      		mov r24,r28
+ 107 0034 0E94 0000 		call Send_7219
+ 108               	.LVL9:
+ 109 0038 C150      		subi r28,lo8(-(-1))
+ 110               	.LVL10:
+  24:disp.c        ****     } while (--i);
+ 111               		.loc 1 24 0 discriminator 1
+ 112 003a 01F4      		brne .L3
+ 113               	/* epilogue start */
+  25:disp.c        **** }
+ 114               		.loc 1 25 0
+ 115 003c CF91      		pop r28
+ 116               	.LVL11:
+ 117 003e 0895      		ret
+ 118               		.cfi_endproc
+ 119               	.LFE7:
+ 121               	.global	Disp_Bars
+ 123               	Disp_Bars:
+ 124               	.LFB8:
+  26:disp.c        **** 
+  27:disp.c        **** /*static uint8_t bar_conv_singl[9] = {
+  28:disp.c        **** 	0, 0b1000, 0b10000000, 0b100, 0b10000, 1, 0b100000, 0b10, 0b1000000 };
+  29:disp.c        **** 	*/
+  30:disp.c        **** static uint8_t bar_conv_full[] = {
+  31:disp.c        **** 	0, 0b1000, 136, 140, 156, 157, 189, 191, 255 };
+  32:disp.c        **** void Disp_Bars(uint8_t dt)
+  33:disp.c        **** {
+ 125               		.loc 1 33 0
+ 126               		.cfi_startproc
+ 127               	.LVL12:
+ 128 0040 CF93      		push r28
+ 129               	.LCFI4:
+ 130               		.cfi_def_cfa_offset 3
+ 131               		.cfi_offset 28, -2
+ 132               	/* prologue: function */
+ 133               	/* frame size = 0 */
+ 134               	/* stack size = 1 */
+ 135               	.L__stack_usage = 1
+  34:disp.c        ****     if (dt < 9) {
+  35:disp.c        **** 	dt = bar_conv_full[dt];
+ 136               		.loc 1 35 0
+ 137 0042 E82F      		mov r30,r24
+  34:disp.c        ****     if (dt < 9) {
+ 138               		.loc 1 34 0
+ 139 0044 8930      		cpi r24,lo8(9)
+ 140 0046 00F4      		brsh .L7
+ 141               		.loc 1 35 0
+ 142 0048 F0E0      		ldi r31,0
+ 143 004a E050      		subi r30,lo8(-(bar_conv_full))
+ 144 004c F040      		sbci r31,hi8(-(bar_conv_full))
+ 145 004e C081      		ld r28,Z
+ 146               	.LVL13:
+  36:disp.c        **** 	Send_7219(BAR1_SEG, 0);
+ 147               		.loc 1 36 0
+ 148 0050 60E0      		ldi r22,0
+ 149 0052 82E0      		ldi r24,lo8(2)
+ 150 0054 0E94 0000 		call Send_7219
+ 151               	.LVL14:
+ 152 0058 00C0      		rjmp .L8
+ 153               	.LVL15:
+ 154               	.L7:
+  37:disp.c        ****     } else {
+  38:disp.c        **** 	if (dt > 10)
+  39:disp.c        **** 	    dt = 10;
+  40:disp.c        **** 	Send_7219(BAR1_SEG, bar_conv_full[dt - 8]);
+ 155               		.loc 1 40 0
+ 156 005a 8B30      		cpi r24,lo8(11)
+ 157 005c 00F0      		brlo .L9
+ 158 005e EAE0      		ldi r30,lo8(10)
+ 159               	.L9:
+ 160 0060 F0E0      		ldi r31,0
+ 161 0062 E050      		subi r30,lo8(-(bar_conv_full-8))
+ 162 0064 F040      		sbci r31,hi8(-(bar_conv_full-8))
+ 163 0066 6081      		ld r22,Z
+ 164 0068 82E0      		ldi r24,lo8(2)
+ 165 006a 0E94 0000 		call Send_7219
+ 166               	.LVL16:
+  41:disp.c        **** 	dt = 255;
+ 167               		.loc 1 41 0
+ 168 006e CFEF      		ldi r28,lo8(-1)
+ 169               	.LVL17:
+ 170               	.L8:
+  42:disp.c        ****     }
+  43:disp.c        ****     Send_7219(BAR0_SEG, dt);
+ 171               		.loc 1 43 0
+ 172 0070 6C2F      		mov r22,r28
+ 173 0072 81E0      		ldi r24,lo8(1)
+ 174               	/* epilogue start */
+  44:disp.c        **** }
+ 175               		.loc 1 44 0
+ 176 0074 CF91      		pop r28
+ 177               	.LVL18:
+  43:disp.c        **** }
+ 178               		.loc 1 43 0
+ 179 0076 0C94 0000 		jmp Send_7219
+ 180               	.LVL19:
+ 181               		.cfi_endproc
+ 182               	.LFE8:
+ 184               	.global	Disp_Num_Seg
+ 186               	Disp_Num_Seg:
+ 187               	.LFB9:
+  45:disp.c        **** // |
+  46:disp.c        **** 
+  47:disp.c        **** static uint8_t num_conv_singl[10] = {
+  48:disp.c        **** 	0b10111101, 0b10000001, 0b11111000, 0b11101001, 0b11000101, 0b1101101, 0b1111101, 0b10001001, 0b11
+  49:disp.c        **** 	0b11101101 };
+  50:disp.c        **** void Disp_Num_Seg(uint8_t seg, uint8_t num, uint8_t dot)
+  51:disp.c        **** {
+ 188               		.loc 1 51 0
+ 189               		.cfi_startproc
+ 190               	.LVL20:
+ 191 007a 0F93      		push r16
+ 192               	.LCFI5:
+ 193               		.cfi_def_cfa_offset 3
+ 194               		.cfi_offset 16, -2
+ 195 007c 1F93      		push r17
+ 196               	.LCFI6:
+ 197               		.cfi_def_cfa_offset 4
+ 198               		.cfi_offset 17, -3
+ 199               	/* prologue: function */
+ 200               	/* frame size = 0 */
+ 201               	/* stack size = 2 */
+ 202               	.L__stack_usage = 2
+  52:disp.c        ****     if (num < 10) {
+ 203               		.loc 1 52 0
+ 204 007e 6A30      		cpi r22,lo8(10)
+ 205 0080 00F4      		brsh .L11
+  53:disp.c        **** 	num = num_conv_singl[num];
+ 206               		.loc 1 53 0
+ 207 0082 E62F      		mov r30,r22
+ 208 0084 F0E0      		ldi r31,0
+ 209 0086 E050      		subi r30,lo8(-(num_conv_singl))
+ 210 0088 F040      		sbci r31,hi8(-(num_conv_singl))
+ 211 008a 6081      		ld r22,Z
+ 212               	.LVL21:
+ 213 008c 00C0      		rjmp .L12
+ 214               	.L11:
+  54:disp.c        ****     } else {
+  55:disp.c        **** 	switch (num) {
+ 215               		.loc 1 55 0
+ 216 008e 062F      		mov r16,r22
+ 217 0090 10E0      		ldi r17,0
+ 218 0092 F801      		movw r30,r16
+ 219 0094 FF97      		sbiw r30,63
+ 220 0096 EB33      		cpi r30,59
+ 221 0098 F105      		cpc r31,__zero_reg__
+ 222 009a 00F4      		brsh .L13
+ 223               	.LVL22:
+ 224 009c E050      		subi r30,lo8(-(gs(.L15)))
+ 225 009e F040      		sbci r31,hi8(-(gs(.L15)))
+ 226 00a0 0C94 0000 		jmp __tablejump2__
+ 227               		.section	.progmem.gcc_sw_table,"a",@progbits
+ 228               		.p2align	1
+ 229               	.L15:
+ 230 0000 0000      		.word gs(.L14)
+ 231 0002 0000      		.word gs(.L13)
+ 232 0004 0000      		.word gs(.L37)
+ 233 0006 0000      		.word gs(.L16)
+ 234 0008 0000      		.word gs(.L17)
+ 235 000a 0000      		.word gs(.L18)
+ 236 000c 0000      		.word gs(.L19)
+ 237 000e 0000      		.word gs(.L20)
+ 238 0010 0000      		.word gs(.L13)
+ 239 0012 0000      		.word gs(.L21)
+ 240 0014 0000      		.word gs(.L22)
+ 241 0016 0000      		.word gs(.L13)
+ 242 0018 0000      		.word gs(.L13)
+ 243 001a 0000      		.word gs(.L23)
+ 244 001c 0000      		.word gs(.L13)
+ 245 001e 0000      		.word gs(.L13)
+ 246 0020 0000      		.word gs(.L13)
+ 247 0022 0000      		.word gs(.L24)
+ 248 0024 0000      		.word gs(.L13)
+ 249 0026 0000      		.word gs(.L13)
+ 250 0028 0000      		.word gs(.L25)
+ 251 002a 0000      		.word gs(.L13)
+ 252 002c 0000      		.word gs(.L26)
+ 253 002e 0000      		.word gs(.L13)
+ 254 0030 0000      		.word gs(.L13)
+ 255 0032 0000      		.word gs(.L13)
+ 256 0034 0000      		.word gs(.L13)
+ 257 0036 0000      		.word gs(.L13)
+ 258 0038 0000      		.word gs(.L13)
+ 259 003a 0000      		.word gs(.L13)
+ 260 003c 0000      		.word gs(.L13)
+ 261 003e 0000      		.word gs(.L13)
+ 262 0040 0000      		.word gs(.L13)
+ 263 0042 0000      		.word gs(.L13)
+ 264 0044 0000      		.word gs(.L37)
+ 265 0046 0000      		.word gs(.L16)
+ 266 0048 0000      		.word gs(.L27)
+ 267 004a 0000      		.word gs(.L18)
+ 268 004c 0000      		.word gs(.L19)
+ 269 004e 0000      		.word gs(.L20)
+ 270 0050 0000      		.word gs(.L13)
+ 271 0052 0000      		.word gs(.L28)
+ 272 0054 0000      		.word gs(.L29)
+ 273 0056 0000      		.word gs(.L13)
+ 274 0058 0000      		.word gs(.L13)
+ 275 005a 0000      		.word gs(.L13)
+ 276 005c 0000      		.word gs(.L13)
+ 277 005e 0000      		.word gs(.L30)
+ 278 0060 0000      		.word gs(.L31)
+ 279 0062 0000      		.word gs(.L13)
+ 280 0064 0000      		.word gs(.L13)
+ 281 0066 0000      		.word gs(.L32)
+ 282 0068 0000      		.word gs(.L13)
+ 283 006a 0000      		.word gs(.L12)
+ 284 006c 0000      		.word gs(.L34)
+ 285 006e 0000      		.word gs(.L13)
+ 286 0070 0000      		.word gs(.L13)
+ 287 0072 0000      		.word gs(.L13)
+ 288 0074 0000      		.word gs(.L35)
+ 289               		.text
+ 290               	.L25:
+  56:disp.c        **** 	case 'S':
+  57:disp.c        **** 	    num = num_conv_singl[5];
+ 291               		.loc 1 57 0
+ 292 00a4 6DE6      		ldi r22,lo8(109)
+ 293 00a6 00C0      		rjmp .L12
+ 294               	.L16:
+ 295               	.LVL23:
+  58:disp.c        **** 	    break;
+  59:disp.c        **** 	case 'A':
+  60:disp.c        **** 	case 'a':
+  61:disp.c        **** 	    num = 0b11011101;
+  62:disp.c        **** 	    break;
+  63:disp.c        **** 	case 'b':
+  64:disp.c        **** 	case 'B':
+  65:disp.c        **** 	    num = 0b01110101;
+ 296               		.loc 1 65 0
+ 297 00a8 65E7      		ldi r22,lo8(117)
+  66:disp.c        **** 	    break;
+ 298               		.loc 1 66 0
+ 299 00aa 00C0      		rjmp .L12
+ 300               	.LVL24:
+ 301               	.L17:
+  67:disp.c        **** 	case 'C':
+  68:disp.c        **** 	    num = 0b00111100;
+ 302               		.loc 1 68 0
+ 303 00ac 6CE3      		ldi r22,lo8(60)
+  69:disp.c        **** 	    break;
+ 304               		.loc 1 69 0
+ 305 00ae 00C0      		rjmp .L12
+ 306               	.LVL25:
+ 307               	.L27:
+  70:disp.c        **** 	case 'c':
+  71:disp.c        **** 	    num = 0b01110000;
+ 308               		.loc 1 71 0
+ 309 00b0 60E7      		ldi r22,lo8(112)
+  72:disp.c        **** 	    break;
+ 310               		.loc 1 72 0
+ 311 00b2 00C0      		rjmp .L12
+ 312               	.LVL26:
+ 313               	.L18:
+  73:disp.c        **** 	case 'D':
+  74:disp.c        **** 	case 'd':
+  75:disp.c        **** 	    num = 0b11110001;
+ 314               		.loc 1 75 0
+ 315 00b4 61EF      		ldi r22,lo8(-15)
+  76:disp.c        **** 	    break;
+ 316               		.loc 1 76 0
+ 317 00b6 00C0      		rjmp .L12
+ 318               	.LVL27:
+ 319               	.L19:
+  77:disp.c        **** 	case 'E':
+  78:disp.c        **** 	case 'e':
+  79:disp.c        **** 	    num = 0b01111100;
+ 320               		.loc 1 79 0
+ 321 00b8 6CE7      		ldi r22,lo8(124)
+  80:disp.c        **** 	    break;
+ 322               		.loc 1 80 0
+ 323 00ba 00C0      		rjmp .L12
+ 324               	.LVL28:
+ 325               	.L20:
+  81:disp.c        **** 	case 'F':
+  82:disp.c        **** 	case 'f':
+  83:disp.c        **** 	    num = 0b01011100;
+ 326               		.loc 1 83 0
+ 327 00bc 6CE5      		ldi r22,lo8(92)
+  84:disp.c        **** 	    break;
+ 328               		.loc 1 84 0
+ 329 00be 00C0      		rjmp .L12
+ 330               	.LVL29:
+ 331               	.L28:
+  85:disp.c        **** 	case 'h':
+  86:disp.c        **** 	    num = 0b01010101;
+ 332               		.loc 1 86 0
+ 333 00c0 65E5      		ldi r22,lo8(85)
+  87:disp.c        **** 	    break;
+ 334               		.loc 1 87 0
+ 335 00c2 00C0      		rjmp .L12
+ 336               	.LVL30:
+ 337               	.L21:
+  88:disp.c        **** 	case 'H':
+  89:disp.c        **** 	    num = 0b11010101;
+ 338               		.loc 1 89 0
+ 339 00c4 65ED      		ldi r22,lo8(-43)
+  90:disp.c        **** 	    break;
+ 340               		.loc 1 90 0
+ 341 00c6 00C0      		rjmp .L12
+ 342               	.LVL31:
+ 343               	.L30:
+  91:disp.c        **** 	case 'n':
+  92:disp.c        **** 	    num = 0b01010001;
+ 344               		.loc 1 92 0
+ 345 00c8 61E5      		ldi r22,lo8(81)
+  93:disp.c        **** 	    break;
+ 346               		.loc 1 93 0
+ 347 00ca 00C0      		rjmp .L12
+ 348               	.LVL32:
+ 349               	.L31:
+  94:disp.c        **** 	case 'o':
+  95:disp.c        **** 	    num = 0b01110001;
+ 350               		.loc 1 95 0
+ 351 00cc 61E7      		ldi r22,lo8(113)
+  96:disp.c        **** 	    break;
+ 352               		.loc 1 96 0
+ 353 00ce 00C0      		rjmp .L12
+ 354               	.LVL33:
+ 355               	.L23:
+  97:disp.c        **** 	case 't':
+  98:disp.c        **** 	    num = 0b01110100;
+  99:disp.c        **** 	    break;
+ 100:disp.c        **** 	case 'L':
+ 101:disp.c        **** 	    num = 0b00110100;
+ 356               		.loc 1 101 0
+ 357 00d0 64E3      		ldi r22,lo8(52)
+ 102:disp.c        **** 	    break;
+ 358               		.loc 1 102 0
+ 359 00d2 00C0      		rjmp .L12
+ 360               	.LVL34:
+ 361               	.L29:
+ 103:disp.c        **** 	case 'i':
+ 104:disp.c        **** 	    num = 0b00000001;
+ 362               		.loc 1 104 0
+ 363 00d4 61E0      		ldi r22,lo8(1)
+ 105:disp.c        **** 	    break;
+ 364               		.loc 1 105 0
+ 365 00d6 00C0      		rjmp .L12
+ 366               	.LVL35:
+ 367               	.L22:
+ 106:disp.c        **** 	case 'I':
+ 107:disp.c        **** 	    num = 0b00010100;
+ 368               		.loc 1 107 0
+ 369 00d8 64E1      		ldi r22,lo8(20)
+ 108:disp.c        **** 	    break;
+ 370               		.loc 1 108 0
+ 371 00da 00C0      		rjmp .L12
+ 372               	.LVL36:
+ 373               	.L32:
+ 109:disp.c        **** 	case 'r':
+ 110:disp.c        **** 	    num = 0b01010000;
+ 374               		.loc 1 110 0
+ 375 00dc 60E5      		ldi r22,lo8(80)
+ 111:disp.c        **** 	    break;
+ 376               		.loc 1 111 0
+ 377 00de 00C0      		rjmp .L12
+ 378               	.LVL37:
+ 379               	.L24:
+ 112:disp.c        **** 	case 'P':
+ 113:disp.c        **** 	    num = 0b11011100;
+ 380               		.loc 1 113 0
+ 381 00e0 6CED      		ldi r22,lo8(-36)
+ 114:disp.c        **** 	    break;
+ 382               		.loc 1 114 0
+ 383 00e2 00C0      		rjmp .L12
+ 384               	.LVL38:
+ 385               	.L34:
+ 115:disp.c        **** 	case 'u':
+ 116:disp.c        **** 	    num = 0b00110001;
+ 386               		.loc 1 116 0
+ 387 00e4 61E3      		ldi r22,lo8(49)
+ 117:disp.c        **** 	    break;
+ 388               		.loc 1 117 0
+ 389 00e6 00C0      		rjmp .L12
+ 390               	.LVL39:
+ 391               	.L26:
+ 118:disp.c        **** 	case 'U':
+ 119:disp.c        **** 	    num = 0b10110101;
+ 392               		.loc 1 119 0
+ 393 00e8 65EB      		ldi r22,lo8(-75)
+ 120:disp.c        **** 	    break;
+ 394               		.loc 1 120 0
+ 395 00ea 00C0      		rjmp .L12
+ 396               	.LVL40:
+ 397               	.L35:
+ 121:disp.c        **** 	case 'y':
+ 122:disp.c        **** 	    num = 0b11100101;
+ 398               		.loc 1 122 0
+ 399 00ec 65EE      		ldi r22,lo8(-27)
+ 123:disp.c        **** 	    break;
+ 400               		.loc 1 123 0
+ 401 00ee 00C0      		rjmp .L12
+ 402               	.LVL41:
+ 403               	.L14:
+ 124:disp.c        **** 	case '?':
+ 125:disp.c        **** 	    num = 0b11011000;
+ 404               		.loc 1 125 0
+ 405 00f0 68ED      		ldi r22,lo8(-40)
+ 126:disp.c        **** 	    break;
+ 406               		.loc 1 126 0
+ 407 00f2 00C0      		rjmp .L12
+ 408               	.LVL42:
+ 409               	.L13:
+ 127:disp.c        **** 	default:
+ 128:disp.c        **** 	    num = 0b01000000;
+ 410               		.loc 1 128 0
+ 411 00f4 60E4      		ldi r22,lo8(64)
+ 412 00f6 00C0      		rjmp .L12
+ 413               	.LVL43:
+ 414               	.L37:
+  61:disp.c        **** 	    break;
+ 415               		.loc 1 61 0
+ 416 00f8 6DED      		ldi r22,lo8(-35)
+ 417               	.LVL44:
+ 418               	.L12:
+ 129:disp.c        **** 	}
+ 130:disp.c        ****     }
+ 131:disp.c        ****     if (dot)
+ 419               		.loc 1 131 0
+ 420 00fa 4111      		cpse r20,__zero_reg__
+ 132:disp.c        **** 	num |= 2;
+ 421               		.loc 1 132 0
+ 422 00fc 6260      		ori r22,lo8(2)
+ 423               	.LVL45:
+ 424               	.L36:
+ 425               	/* epilogue start */
+ 133:disp.c        ****     Send_7219(seg, num);
+ 134:disp.c        **** }
+ 426               		.loc 1 134 0
+ 427 00fe 1F91      		pop r17
+ 428 0100 0F91      		pop r16
+ 133:disp.c        ****     Send_7219(seg, num);
+ 429               		.loc 1 133 0
+ 430 0102 0C94 0000 		jmp Send_7219
+ 431               	.LVL46:
+ 432               		.cfi_endproc
+ 433               	.LFE9:
+ 435               	.global	Disp_Num
+ 437               	Disp_Num:
+ 438               	.LFB10:
+ 135:disp.c        **** 
+ 136:disp.c        **** void Disp_Num(int8_t num, uint8_t dot)
+ 137:disp.c        **** {
+ 439               		.loc 1 137 0
+ 440               		.cfi_startproc
+ 441               	.LVL47:
+ 442 0106 CF93      		push r28
+ 443               	.LCFI7:
+ 444               		.cfi_def_cfa_offset 3
+ 445               		.cfi_offset 28, -2
+ 446 0108 DF93      		push r29
+ 447               	.LCFI8:
+ 448               		.cfi_def_cfa_offset 4
+ 449               		.cfi_offset 29, -3
+ 450               	/* prologue: function */
+ 451               	/* frame size = 0 */
+ 452               	/* stack size = 2 */
+ 453               	.L__stack_usage = 2
+ 454 010a 282F      		mov r18,r24
+ 455 010c D62F      		mov r29,r22
+ 456               	.LVL48:
+ 138:disp.c        ****     uint8_t dot1 = 0;
+ 139:disp.c        ****     uint8_t st, ml;
+ 140:disp.c        ****     if (num < 0) {
+ 457               		.loc 1 140 0
+ 458 010e 87FF      		sbrs r24,7
+ 459 0110 00C0      		rjmp .L44
+ 460               	.LVL49:
+ 141:disp.c        **** 	dot1 = 1;
+ 142:disp.c        **** 	num = abs(num);
+ 461               		.loc 1 142 0
+ 462 0112 2195      		neg r18
+ 463               	.LVL50:
+ 141:disp.c        **** 	dot1 = 1;
+ 464               		.loc 1 141 0
+ 465 0114 41E0      		ldi r20,lo8(1)
+ 466 0116 00C0      		rjmp .L42
+ 467               	.LVL51:
+ 468               	.L44:
+ 138:disp.c        ****     uint8_t dot1 = 0;
+ 469               		.loc 1 138 0
+ 470 0118 40E0      		ldi r20,0
+ 471               	.LVL52:
+ 472               	.L42:
+ 143:disp.c        ****     }
+ 144:disp.c        ****     if (num > 99) {
+ 473               		.loc 1 144 0
+ 474 011a 2436      		cpi r18,lo8(100)
+ 475 011c 04F4      		brge .L45
+ 145:disp.c        **** 	st = 'h';
+ 146:disp.c        **** 	ml = 'i';
+ 147:disp.c        ****     } else {
+ 148:disp.c        **** 	st = num / 10;
+ 476               		.loc 1 148 0
+ 477 011e 822F      		mov r24,r18
+ 478 0120 6AE0      		ldi r22,lo8(10)
+ 479               	.LVL53:
+ 480 0122 0E94 0000 		call __divmodqi4
+ 481               	.LVL54:
+ 149:disp.c        **** 	ml = num - (st * 10);
+ 482               		.loc 1 149 0
+ 483 0126 C22F      		mov r28,r18
+ 484 0128 9AE0      		ldi r25,lo8(10)
+ 485 012a 899F      		mul r24,r25
+ 486 012c C019      		sub r28,r0
+ 487 012e 1124      		clr __zero_reg__
+ 488               	.LVL55:
+ 489 0130 00C0      		rjmp .L43
+ 490               	.LVL56:
+ 491               	.L45:
+ 146:disp.c        ****     } else {
+ 492               		.loc 1 146 0
+ 493 0132 C9E6      		ldi r28,lo8(105)
+ 145:disp.c        **** 	st = 'h';
+ 494               		.loc 1 145 0
+ 495 0134 88E6      		ldi r24,lo8(104)
+ 496               	.LVL57:
+ 497               	.L43:
+ 150:disp.c        ****     }
+ 151:disp.c        **** 
+ 152:disp.c        ****     Disp_Num_Seg(NUM0_SEG, st, dot1);
+ 498               		.loc 1 152 0
+ 499 0136 682F      		mov r22,r24
+ 500 0138 83E0      		ldi r24,lo8(3)
+ 501               	.LVL58:
+ 502 013a 0E94 0000 		call Disp_Num_Seg
+ 503               	.LVL59:
+ 153:disp.c        ****     Disp_Num_Seg(NUM1_SEG, ml, dot);
+ 504               		.loc 1 153 0
+ 505 013e 4D2F      		mov r20,r29
+ 506 0140 6C2F      		mov r22,r28
+ 507 0142 84E0      		ldi r24,lo8(4)
+ 508               	/* epilogue start */
+ 154:disp.c        **** }
+ 509               		.loc 1 154 0
+ 510 0144 DF91      		pop r29
+ 511               	.LVL60:
+ 512 0146 CF91      		pop r28
+ 513               	.LVL61:
+ 153:disp.c        ****     Disp_Num_Seg(NUM1_SEG, ml, dot);
+ 514               		.loc 1 153 0
+ 515 0148 0C94 0000 		jmp Disp_Num_Seg
+ 516               	.LVL62:
+ 517               		.cfi_endproc
+ 518               	.LFE10:
+ 520               		.section	.rodata
+ 523               	num_conv_singl:
+ 524 0000 BD        		.byte	-67
+ 525 0001 81        		.byte	-127
+ 526 0002 F8        		.byte	-8
+ 527 0003 E9        		.byte	-23
+ 528 0004 C5        		.byte	-59
+ 529 0005 6D        		.byte	109
+ 530 0006 7D        		.byte	125
+ 531 0007 89        		.byte	-119
+ 532 0008 FD        		.byte	-3
+ 533 0009 ED        		.byte	-19
+ 536               	bar_conv_full:
+ 537 000a 00        		.byte	0
+ 538 000b 08        		.byte	8
+ 539 000c 88        		.byte	-120
+ 540 000d 8C        		.byte	-116
+ 541 000e 9C        		.byte	-100
+ 542 000f 9D        		.byte	-99
+ 543 0010 BD        		.byte	-67
+ 544 0011 BF        		.byte	-65
+ 545 0012 FF        		.byte	-1
+ 546               		.text
+ 547               	.Letext0:
+ 548               		.file 3 "/usr/lib/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 disp.c
+     /tmp/cc8BC0VQ.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc8BC0VQ.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc8BC0VQ.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc8BC0VQ.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc8BC0VQ.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc8BC0VQ.s:12     .text:0000000000000000 Send_7219
+     /tmp/cc8BC0VQ.s:87     .text:000000000000002c Clear_7219
+     /tmp/cc8BC0VQ.s:123    .text:0000000000000040 Disp_Bars
+     /tmp/cc8BC0VQ.s:536    .rodata:000000000000000a bar_conv_full
+     /tmp/cc8BC0VQ.s:186    .text:000000000000007a Disp_Num_Seg
+     /tmp/cc8BC0VQ.s:523    .rodata:0000000000000000 num_conv_singl
+     /tmp/cc8BC0VQ.s:437    .text:0000000000000106 Disp_Num
+
+UNDEFINED SYMBOLS
+SPI_SendByte
+__tablejump2__
+__divmodqi4
+__do_copy_data

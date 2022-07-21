@@ -1,0 +1,211 @@
+   1               		.file	"usart.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	USART_Init
+  12               	USART_Init:
+  13               	.LFB1:
+  14               		.file 1 "usart.c"
+   1:usart.c       **** //***************************************************************************
+   2:usart.c       **** //
+   3:usart.c       **** //  Author(s)...: Pashgan    http://ChipEnable.Ru   
+   4:usart.c       **** //
+   5:usart.c       **** //  Target(s)...: ATMega8535
+   6:usart.c       **** //
+   7:usart.c       **** //  Compiler....: WINAVR
+   8:usart.c       **** //
+   9:usart.c       **** //  Description.: драйвер USART/UART с кольцевым буфером
+  10:usart.c       **** //
+  11:usart.c       **** //  Data........: 11.01.10 
+  12:usart.c       **** //
+  13:usart.c       **** //***************************************************************************
+  14:usart.c       **** #include "usart.h"
+  15:usart.c       **** #include "subs.h"
+  16:usart.c       **** #include "io.h"
+  17:usart.c       **** 
+  18:usart.c       **** //#define USART_BAUDRATE 38400L
+  19:usart.c       **** #define USART_BAUDRATE 19200L
+  20:usart.c       **** #define UBRRL_value (F_CPU/(USART_BAUDRATE*16))-1
+  21:usart.c       **** 
+  22:usart.c       **** //инициализация usart`a
+  23:usart.c       **** void USART_Init(void)
+  24:usart.c       **** {
+  15               		.loc 1 24 0
+  16               		.cfi_startproc
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  25:usart.c       ****     UBRRL = UBRRL_value;       //Младшие 8 бит UBRRL_value
+  21               		.loc 1 25 0
+  22 0000 8CE0      		ldi r24,lo8(12)
+  23 0002 89B9      		out 0x9,r24
+  26:usart.c       ****     UBRRH = (UBRRL_value) >> 8;  //Старшие 8 бит UBRRL_value
+  24               		.loc 1 26 0
+  25 0004 10BC      		out 0x20,__zero_reg__
+  27:usart.c       ****     UCSRB |=(1<<TXEN);         //Бит разрешения передачи
+  26               		.loc 1 27 0
+  27 0006 539A      		sbi 0xa,3
+  28:usart.c       ****     UCSRC |=(1<< URSEL)|(1<< UCSZ0)|(1<< UCSZ1); //Устанавливем формат 8 бит �
+  28               		.loc 1 28 0
+  29 0008 80B5      		in r24,0x20
+  30 000a 8668      		ori r24,lo8(-122)
+  31 000c 80BD      		out 0x20,r24
+  29:usart.c       **** //	USART_RxTx485(1);
+  30:usart.c       ****     set_dir_out(OUT_UART_TX);
+  32               		.loc 1 30 0
+  33 000e 899A      		sbi 0x11,1
+  34 0010 0895      		ret
+  35               		.cfi_endproc
+  36               	.LFE1:
+  38               	.global	USART_PutChar
+  40               	USART_PutChar:
+  41               	.LFB2:
+  31:usart.c       **** }
+  32:usart.c       **** 
+  33:usart.c       **** //помещает символ в буфер, инициирует начало передачи
+  34:usart.c       **** void USART_PutChar(char sym)
+  35:usart.c       **** {
+  42               		.loc 1 35 0
+  43               		.cfi_startproc
+  44               	.LVL0:
+  45               	/* prologue: function */
+  46               	/* frame size = 0 */
+  47               	/* stack size = 0 */
+  48               	.L__stack_usage = 0
+  49               	.LBB4:
+  50               	.LBB5:
+  51               		.file 2 "subs.h"
+   1:subs.h        **** //#include <avr/wdt.h>
+   2:subs.h        **** #define XTAL F_CPU
+   3:subs.h        **** #include <stdint.h>
+   4:subs.h        **** #include <avr/interrupt.h>
+   5:subs.h        **** 
+   6:subs.h        **** #define BTN_LONG_DELAY	2
+   7:subs.h        **** 
+   8:subs.h        **** typedef enum {
+   9:subs.h        ****     ADC0 = 0,
+  10:subs.h        ****     ADC1 = 1,
+  11:subs.h        ****     ADC2 = 2,
+  12:subs.h        ****     ADC3 = 3,
+  13:subs.h        ****     ADC4 = 4,
+  14:subs.h        ****     ADC5 = 5,
+  15:subs.h        ****     ADC6_Temp = 6,
+  16:subs.h        ****     ADC7_U12v = 7
+  17:subs.h        **** } adc_in_type;
+  18:subs.h        **** 
+  19:subs.h        **** /*************************************************************************
+  20:subs.h        ****  delay loop for small accurate delays: 16-bit counter, 4 cycles/loop
+  21:subs.h        ****  *************************************************************************/
+  22:subs.h        **** static inline void _delayFourCycles(uint16_t __count)
+  23:subs.h        **** {
+  24:subs.h        ****     if (__count == 0)
+  25:subs.h        **** 	__asm__ __volatile__( "rjmp 1f\n 1:" );
+  26:subs.h        ****     // 2 cycles
+  27:subs.h        ****     else
+  28:subs.h        **** 	__asm__ __volatile__ (
+  52               		.loc 2 28 0
+  53 0012 21E0      		ldi r18,lo8(1)
+  54 0014 30E0      		ldi r19,0
+  55               	.L3:
+  56               	.LBE5:
+  57               	.LBE4:
+  36:usart.c       ****     while(!( UCSRA & (1 << UDRE)))
+  58               		.loc 1 36 0
+  59 0016 5D99      		sbic 0xb,5
+  60 0018 00C0      		rjmp .L6
+  61               	.LVL1:
+  62               	.LBB7:
+  63               	.LBB6:
+  64               		.loc 2 28 0
+  65 001a F901      		movw r30,r18
+  66               	/* #APP */
+  67               	 ;  28 "subs.h" 1
+  68 001c 3197      		1: sbiw r30,1
+  69 001e 01F4      		brne 1b
+  70               	 ;  0 "" 2
+  71               	.LVL2:
+  72               	/* #NOAPP */
+  73 0020 00C0      		rjmp .L3
+  74               	.L6:
+  75               	.LBE6:
+  76               	.LBE7:
+  37:usart.c       **** 	delay(1);
+  38:usart.c       **** //    while ( !( UCSRA & (1<<5)) ) {}
+  39:usart.c       ****     UDR = sym;
+  77               		.loc 1 39 0
+  78 0022 8CB9      		out 0xc,r24
+  79 0024 0895      		ret
+  80               		.cfi_endproc
+  81               	.LFE2:
+  83               	.global	USART_SendStr
+  85               	USART_SendStr:
+  86               	.LFB3:
+  40:usart.c       **** }
+  41:usart.c       **** 
+  42:usart.c       **** //функция посылающая строку по usart`у
+  43:usart.c       **** void USART_SendStr(char * data)
+  44:usart.c       **** {
+  87               		.loc 1 44 0
+  88               		.cfi_startproc
+  89               	.LVL3:
+  90 0026 CF93      		push r28
+  91               	.LCFI0:
+  92               		.cfi_def_cfa_offset 3
+  93               		.cfi_offset 28, -2
+  94 0028 DF93      		push r29
+  95               	.LCFI1:
+  96               		.cfi_def_cfa_offset 4
+  97               		.cfi_offset 29, -3
+  98               	/* prologue: function */
+  99               	/* frame size = 0 */
+ 100               	/* stack size = 2 */
+ 101               	.L__stack_usage = 2
+ 102 002a EC01      		movw r28,r24
+ 103               	.LVL4:
+ 104               	.L8:
+  45:usart.c       ****     uint8_t sym;
+  46:usart.c       ****     while (*data) {
+ 105               		.loc 1 46 0
+ 106 002c 8991      		ld r24,Y+
+ 107               	.LVL5:
+ 108 002e 8823      		tst r24
+ 109 0030 01F0      		breq .L10
+ 110               	.LVL6:
+  47:usart.c       **** 	sym = *data++;
+  48:usart.c       **** 	USART_PutChar(sym);
+ 111               		.loc 1 48 0
+ 112 0032 00D0      		rcall USART_PutChar
+ 113               	.LVL7:
+ 114 0034 00C0      		rjmp .L8
+ 115               	.LVL8:
+ 116               	.L10:
+ 117               	/* epilogue start */
+  49:usart.c       ****     }
+  50:usart.c       **** }
+ 118               		.loc 1 50 0
+ 119 0036 DF91      		pop r29
+ 120 0038 CF91      		pop r28
+ 121               	.LVL9:
+ 122 003a 0895      		ret
+ 123               		.cfi_endproc
+ 124               	.LFE3:
+ 126               	.Letext0:
+ 127               		.file 3 "/usr/lib/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usart.c
+     /tmp/ccqouFbM.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccqouFbM.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccqouFbM.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccqouFbM.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccqouFbM.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccqouFbM.s:12     .text:0000000000000000 USART_Init
+     /tmp/ccqouFbM.s:40     .text:0000000000000012 USART_PutChar
+     /tmp/ccqouFbM.s:85     .text:0000000000000026 USART_SendStr
+
+NO UNDEFINED SYMBOLS

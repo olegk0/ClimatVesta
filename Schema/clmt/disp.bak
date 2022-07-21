@@ -1,0 +1,323 @@
+EESchema Schematic File Version 4
+LIBS:disp-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector_Generic:Conn_01x05 J1
+U 1 1 5DC2DEB0
+P 3100 1650
+F 0 "J1" H 3180 1692 50  0000 L CNN
+F 1 "Display" H 3180 1601 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 3100 1650 50  0001 C CNN
+F 3 "~" H 3100 1650 50  0001 C CNN
+	1    3100 1650
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 5DC2FC7E
+P 4400 1400
+F 0 "C1" H 4515 1446 50  0000 L CNN
+F 1 "C" H 4515 1355 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 4438 1250 50  0001 C CNN
+F 3 "~" H 4400 1400 50  0001 C CNN
+	1    4400 1400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 5DD6AEDF
+P 5850 3150
+F 0 "R2" V 5643 3150 50  0000 C CNN
+F 1 "R" V 5734 3150 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5780 3150 50  0001 C CNN
+F 3 "~" H 5850 3150 50  0001 C CNN
+	1    5850 3150
+	0    1    1    0   
+$EndComp
+$Comp
+L max:MAX7219 U1
+U 1 1 5DC4BBDF
+P 4650 3100
+F 0 "U1" H 4650 3937 60  0000 C CNN
+F 1 "MAX7219" H 4650 3831 60  0000 C CNN
+F 2 "Package_DIP:DIP-24_W7.62mm" H 5250 3100 60  0001 C CNN
+F 3 "" H 5250 3100 60  0000 C CNN
+	1    4650 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED:HDSP-4830_2 BAR1
+U 1 1 5DC58952
+P 4650 4600
+F 0 "BAR1" H 4650 3833 50  0000 C CNN
+F 1 "HDSP-4830_2" H 4650 3924 50  0000 C CNN
+F 2 "Display:HDSP-4830" H 4650 3800 50  0001 C CNN
+F 3 "https://docs.broadcom.com/docs/AV02-1798EN" H 2650 4800 50  0001 C CNN
+	1    4650 4600
+	-1   0    0    1   
+$EndComp
+$Comp
+L Display_Character:HDSM-543B U2
+U 1 1 5DC5A49C
+P 7150 4950
+F 0 "U2" H 7150 5617 50  0000 C CNN
+F 1 "HDSM-543B" H 7150 5526 50  0000 C CNN
+F 2 "Display_7Segment:LED_036-2" H 7150 4400 50  0001 C CNN
+F 3 "https://docs.broadcom.com/docs/AV02-1588EN" H 7050 5050 50  0001 C CNN
+	1    7150 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 5DC71FB9
+P 3450 4900
+F 0 "R1" V 3243 4900 50  0000 C CNN
+F 1 "R" V 3334 4900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 3380 4900 50  0001 C CNN
+F 3 "~" H 3450 4900 50  0001 C CNN
+	1    3450 4900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3300 1850 3400 1850
+Wire Wire Line
+	3400 1850 3400 3650
+Wire Wire Line
+	3400 3650 4050 3650
+Wire Wire Line
+	3300 1750 3500 1750
+Wire Wire Line
+	3500 1750 3500 2550
+Wire Wire Line
+	3500 2550 4050 2550
+Wire Wire Line
+	6400 1650 6400 3650
+Wire Wire Line
+	6400 3650 5250 3650
+Wire Wire Line
+	5700 3150 5250 3150
+Wire Wire Line
+	5250 3050 6100 3050
+Wire Wire Line
+	6100 3050 6100 3150
+Wire Wire Line
+	6100 3150 6000 3150
+Wire Wire Line
+	3300 1650 6400 1650
+Wire Wire Line
+	3300 1550 3600 1550
+Wire Wire Line
+	3300 1450 3500 1450
+Wire Wire Line
+	3500 1450 3500 1100
+Wire Wire Line
+	3500 1100 4400 1100
+Wire Wire Line
+	4400 1100 4400 1250
+Wire Wire Line
+	4050 3350 3600 3350
+Wire Wire Line
+	3600 3350 3600 2850
+Connection ~ 3600 1550
+Wire Wire Line
+	3600 1550 4400 1550
+Wire Wire Line
+	4050 2850 3600 2850
+Connection ~ 3600 2850
+Wire Wire Line
+	3600 2850 3600 1550
+Wire Wire Line
+	6100 3050 6100 1100
+Wire Wire Line
+	6100 1100 4400 1100
+Connection ~ 6100 3050
+Connection ~ 4400 1100
+Wire Wire Line
+	5250 3550 5500 3550
+Wire Wire Line
+	5500 3550 5500 4300
+Wire Wire Line
+	5250 3450 5600 3450
+Wire Wire Line
+	5600 3450 5600 4400
+Wire Wire Line
+	5250 3350 5700 3350
+Wire Wire Line
+	5700 3350 5700 4500
+Wire Wire Line
+	5250 3250 5800 3250
+Wire Wire Line
+	5800 3250 5800 4600
+Wire Wire Line
+	5250 2950 6200 2950
+Wire Wire Line
+	6200 2950 6200 4700
+Wire Wire Line
+	5250 2850 6300 2850
+Wire Wire Line
+	6300 2850 6300 4800
+Wire Wire Line
+	5250 2750 5400 2750
+Wire Wire Line
+	5400 2750 5400 4100
+Wire Wire Line
+	5250 2650 5300 2650
+Wire Wire Line
+	5300 2650 5300 4200
+Wire Wire Line
+	4050 3050 3900 3050
+Wire Wire Line
+	3900 3050 3900 5600
+Wire Wire Line
+	3900 5600 7900 5600
+Wire Wire Line
+	4050 3150 3800 3150
+Wire Wire Line
+	3800 3150 3800 5700
+Wire Wire Line
+	3800 5700 8050 5700
+Wire Wire Line
+	4850 4100 5400 4100
+Connection ~ 5400 4100
+Wire Wire Line
+	5400 4100 5400 4900
+Wire Wire Line
+	4850 4200 5300 4200
+Connection ~ 5300 4200
+Wire Wire Line
+	4850 4300 5500 4300
+Connection ~ 5500 4300
+Wire Wire Line
+	4850 4400 5600 4400
+Wire Wire Line
+	4850 4500 5700 4500
+Wire Wire Line
+	4850 4600 5800 4600
+Wire Wire Line
+	4850 4700 6200 4700
+Wire Wire Line
+	4850 4800 6300 4800
+Wire Wire Line
+	4850 4900 5400 4900
+Wire Wire Line
+	4850 5000 5300 5000
+Wire Wire Line
+	4450 4100 4300 4100
+Wire Wire Line
+	4300 4100 4300 4200
+Wire Wire Line
+	4300 4200 4450 4200
+Wire Wire Line
+	4450 4300 4300 4300
+Wire Wire Line
+	4300 4300 4300 4400
+Wire Wire Line
+	4300 5000 4450 5000
+Wire Wire Line
+	4450 4900 4300 4900
+Connection ~ 4300 4900
+Wire Wire Line
+	4300 4900 4300 5000
+Wire Wire Line
+	4450 4800 4300 4800
+Connection ~ 4300 4800
+Wire Wire Line
+	4300 4800 4300 4900
+Wire Wire Line
+	4450 4700 4300 4700
+Connection ~ 4300 4700
+Wire Wire Line
+	4300 4700 4300 4800
+Wire Wire Line
+	4450 4600 4300 4600
+Connection ~ 4300 4600
+Wire Wire Line
+	4300 4600 4300 4700
+Wire Wire Line
+	4450 4500 4300 4500
+Connection ~ 4300 4500
+Wire Wire Line
+	4300 4500 4300 4600
+Wire Wire Line
+	4450 4400 4300 4400
+Connection ~ 4300 4400
+Wire Wire Line
+	4300 4400 4300 4500
+Wire Wire Line
+	4300 4900 3600 4900
+Wire Wire Line
+	3300 4900 3100 4900
+Wire Wire Line
+	6550 4950 5500 4950
+Wire Wire Line
+	5500 4300 5500 4950
+Wire Wire Line
+	5300 4200 5300 5000
+Wire Wire Line
+	6550 4850 5800 4850
+Wire Wire Line
+	5800 4850 5800 4600
+Connection ~ 5800 4600
+Wire Wire Line
+	6550 4750 5700 4750
+Wire Wire Line
+	5700 4750 5700 4500
+Connection ~ 5700 4500
+Wire Wire Line
+	6550 4650 5600 4650
+Wire Wire Line
+	5600 4650 5600 4400
+Connection ~ 5600 4400
+Wire Wire Line
+	6550 5050 5300 5050
+Wire Wire Line
+	5300 5050 5300 5000
+Connection ~ 5300 5000
+Wire Wire Line
+	6550 5150 5400 5150
+Wire Wire Line
+	5400 5150 5400 4900
+Connection ~ 5400 4900
+Wire Wire Line
+	6550 5250 6200 5250
+Wire Wire Line
+	6200 5250 6200 4700
+Connection ~ 6200 4700
+Wire Wire Line
+	6550 5350 6300 5350
+Wire Wire Line
+	6300 5350 6300 4800
+Connection ~ 6300 4800
+Wire Wire Line
+	8050 5250 7750 5250
+Wire Wire Line
+	8050 5250 8050 5700
+Wire Wire Line
+	7750 5350 7900 5350
+Wire Wire Line
+	7900 5350 7900 5600
+Wire Wire Line
+	4050 3550 4000 3550
+Wire Wire Line
+	4000 3550 4000 4100
+Wire Wire Line
+	4000 4100 4300 4100
+Connection ~ 4300 4100
+Wire Wire Line
+	4050 2650 3100 2650
+Wire Wire Line
+	3100 2650 3100 4900
+$EndSCHEMATC

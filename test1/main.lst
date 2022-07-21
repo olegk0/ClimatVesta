@@ -1,0 +1,1979 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.rodata.str1.1,"aMS",@progbits,1
+  11               	.LC0:
+  12 0000 3A00      		.string	":"
+  13               	.LC1:
+  14 0002 2564 00   		.string	"%d"
+  15               		.text
+  16               	.global	int_to_uart
+  18               	int_to_uart:
+  19               	.LFB11:
+  20               		.file 1 "main.c"
+   1:main.c        **** //#include <avr/io.h>
+   2:main.c        **** #include <avr/interrupt.h>
+   3:main.c        **** #include <avr/pgmspace.h>
+   4:main.c        **** #include <avr/wdt.h>
+   5:main.c        **** //#include <util/delay.h>
+   6:main.c        **** #include <avr/eeprom.h>
+   7:main.c        **** #include <stdio.h>
+   8:main.c        **** #include <stdlib.h>
+   9:main.c        **** #include <ctype.h>
+  10:main.c        **** #include <stdint.h>
+  11:main.c        **** #include <math.h>
+  12:main.c        **** 
+  13:main.c        **** #include "io.h"
+  14:main.c        **** #include "usart.h"
+  15:main.c        **** 
+  16:main.c        **** #include "vars.h"
+  17:main.c        **** #include "subs.h"
+  18:main.c        **** 
+  19:main.c        **** void int_to_uart(char *id, int16_t num)
+  20:main.c        **** {
+  21               		.loc 1 20 0
+  22               		.cfi_startproc
+  23               	.LVL0:
+  24 0000 0F93      		push r16
+  25               	.LCFI0:
+  26               		.cfi_def_cfa_offset 3
+  27               		.cfi_offset 16, -2
+  28 0002 1F93      		push r17
+  29               	.LCFI1:
+  30               		.cfi_def_cfa_offset 4
+  31               		.cfi_offset 17, -3
+  32 0004 CF93      		push r28
+  33               	.LCFI2:
+  34               		.cfi_def_cfa_offset 5
+  35               		.cfi_offset 28, -4
+  36 0006 DF93      		push r29
+  37               	.LCFI3:
+  38               		.cfi_def_cfa_offset 6
+  39               		.cfi_offset 29, -5
+  40 0008 CDB7      		in r28,__SP_L__
+  41 000a DEB7      		in r29,__SP_H__
+  42               	.LCFI4:
+  43               		.cfi_def_cfa_register 28
+  44 000c 2A97      		sbiw r28,10
+  45               	.LCFI5:
+  46               		.cfi_def_cfa_offset 16
+  47 000e 0FB6      		in __tmp_reg__,__SREG__
+  48 0010 F894      		cli
+  49 0012 DEBF      		out __SP_H__,r29
+  50 0014 0FBE      		out __SREG__,__tmp_reg__
+  51 0016 CDBF      		out __SP_L__,r28
+  52               	/* prologue: function */
+  53               	/* frame size = 10 */
+  54               	/* stack size = 14 */
+  55               	.L__stack_usage = 14
+  56 0018 162F      		mov r17,r22
+  57 001a 072F      		mov r16,r23
+  21:main.c        **** //    struct m2bytes nbuf;
+  22:main.c        ****     //USART_PutChar('\x0d');
+  23:main.c        ****     USART_SendStr(id);
+  58               		.loc 1 23 0
+  59 001c 00D0      		rcall USART_SendStr
+  60               	.LVL1:
+  24:main.c        ****     USART_SendStr(":");
+  61               		.loc 1 24 0
+  62 001e 80E0      		ldi r24,lo8(.LC0)
+  63 0020 90E0      		ldi r25,hi8(.LC0)
+  64 0022 00D0      		rcall USART_SendStr
+  65               	.LVL2:
+  25:main.c        ****     /*    nbuf.one = num;
+  26:main.c        ****      num_to_str(&nbuf);
+  27:main.c        ****      USART_PutChar(nbuf.one);
+  28:main.c        ****      USART_PutChar(nbuf.two);
+  29:main.c        ****      */
+  30:main.c        ****     char buf[10];
+  31:main.c        ****     snprintf(buf, sizeof(buf), "%d", num);
+  66               		.loc 1 31 0
+  67 0024 0F93      		push r16
+  68 0026 1F93      		push r17
+  69 0028 80E0      		ldi r24,lo8(.LC1)
+  70 002a 90E0      		ldi r25,hi8(.LC1)
+  71 002c 9F93      		push r25
+  72 002e 8F93      		push r24
+  73 0030 1F92      		push __zero_reg__
+  74 0032 8AE0      		ldi r24,lo8(10)
+  75 0034 8F93      		push r24
+  76 0036 8E01      		movw r16,r28
+  77 0038 0F5F      		subi r16,-1
+  78 003a 1F4F      		sbci r17,-1
+  79 003c 1F93      		push r17
+  80 003e 0F93      		push r16
+  81 0040 00D0      		rcall snprintf
+  82               	.LVL3:
+  32:main.c        ****     USART_SendStr(buf);
+  83               		.loc 1 32 0
+  84 0042 C801      		movw r24,r16
+  85 0044 00D0      		rcall USART_SendStr
+  86               	.LVL4:
+  33:main.c        ****     USART_PutChar(';');
+  87               		.loc 1 33 0
+  88 0046 8BE3      		ldi r24,lo8(59)
+  89 0048 00D0      		rcall USART_PutChar
+  90               	.LVL5:
+  34:main.c        **** //    buf[cnt];
+  35:main.c        **** }
+  91               		.loc 1 35 0
+  92 004a 0FB6      		in __tmp_reg__,__SREG__
+  93 004c F894      		cli
+  94 004e DEBF      		out __SP_H__,r29
+  95 0050 0FBE      		out __SREG__,__tmp_reg__
+  96 0052 CDBF      		out __SP_L__,r28
+  97               	/* epilogue start */
+  98 0054 2A96      		adiw r28,10
+  99 0056 0FB6      		in __tmp_reg__,__SREG__
+ 100 0058 F894      		cli
+ 101 005a DEBF      		out __SP_H__,r29
+ 102 005c 0FBE      		out __SREG__,__tmp_reg__
+ 103 005e CDBF      		out __SP_L__,r28
+ 104 0060 DF91      		pop r29
+ 105 0062 CF91      		pop r28
+ 106 0064 1F91      		pop r17
+ 107 0066 0F91      		pop r16
+ 108 0068 0895      		ret
+ 109               		.cfi_endproc
+ 110               	.LFE11:
+ 112               	.global	__fixsfsi
+ 113               	.global	float_to_uart
+ 115               	float_to_uart:
+ 116               	.LFB12:
+  36:main.c        **** 
+  37:main.c        **** void float_to_uart(char *id, float num)
+  38:main.c        **** {
+ 117               		.loc 1 38 0
+ 118               		.cfi_startproc
+ 119               	.LVL6:
+ 120 006a CF93      		push r28
+ 121               	.LCFI6:
+ 122               		.cfi_def_cfa_offset 3
+ 123               		.cfi_offset 28, -2
+ 124 006c DF93      		push r29
+ 125               	.LCFI7:
+ 126               		.cfi_def_cfa_offset 4
+ 127               		.cfi_offset 29, -3
+ 128               	/* prologue: function */
+ 129               	/* frame size = 0 */
+ 130               	/* stack size = 2 */
+ 131               	.L__stack_usage = 2
+ 132 006e EC01      		movw r28,r24
+  39:main.c        ****     int_to_uart(id, num);
+ 133               		.loc 1 39 0
+ 134 0070 CB01      		movw r24,r22
+ 135 0072 BA01      		movw r22,r20
+ 136 0074 00D0      		rcall __fixsfsi
+ 137               	.LVL7:
+ 138 0076 CE01      		movw r24,r28
+ 139               	/* epilogue start */
+  40:main.c        ****     /*    USART_SendStr(id);
+  41:main.c        ****      USART_SendStr(":");
+  42:main.c        ****      int8_t buf[10];
+  43:main.c        ****      int8_t cnt = snprintf(buf, sizeof(buf), "%g", num);
+  44:main.c        ****      USART_SendStr(buf);
+  45:main.c        ****      USART_Putint8_t(';');
+  46:main.c        ****      */
+  47:main.c        **** }
+ 140               		.loc 1 47 0
+ 141 0078 DF91      		pop r29
+ 142 007a CF91      		pop r28
+ 143               	.LVL8:
+  39:main.c        ****     int_to_uart(id, num);
+ 144               		.loc 1 39 0
+ 145 007c 00C0      		rjmp int_to_uart
+ 146               	.LVL9:
+ 147               		.cfi_endproc
+ 148               	.LFE12:
+ 150               	.global	uart_nl
+ 152               	uart_nl:
+ 153               	.LFB13:
+  48:main.c        **** 
+  49:main.c        **** void uart_nl(void)
+  50:main.c        **** {
+ 154               		.loc 1 50 0
+ 155               		.cfi_startproc
+ 156               	/* prologue: function */
+ 157               	/* frame size = 0 */
+ 158               	/* stack size = 0 */
+ 159               	.L__stack_usage = 0
+  51:main.c        ****     USART_PutChar('\x0d');
+ 160               		.loc 1 51 0
+ 161 007e 8DE0      		ldi r24,lo8(13)
+ 162 0080 00D0      		rcall USART_PutChar
+ 163               	.LVL10:
+  52:main.c        ****     USART_PutChar('\n');
+ 164               		.loc 1 52 0
+ 165 0082 8AE0      		ldi r24,lo8(10)
+ 166 0084 00C0      		rjmp USART_PutChar
+ 167               	.LVL11:
+ 168               		.cfi_endproc
+ 169               	.LFE13:
+ 171               	.global	__vector_8
+ 173               	__vector_8:
+ 174               	.LFB14:
+  53:main.c        **** }
+  54:main.c        **** 
+  55:main.c        **** ISR( TIMER1_OVF_vect)
+  56:main.c        **** {
+ 175               		.loc 1 56 0
+ 176               		.cfi_startproc
+ 177 0086 1F92      		push r1
+ 178               	.LCFI8:
+ 179               		.cfi_def_cfa_offset 3
+ 180               		.cfi_offset 1, -2
+ 181 0088 0F92      		push r0
+ 182               	.LCFI9:
+ 183               		.cfi_def_cfa_offset 4
+ 184               		.cfi_offset 0, -3
+ 185 008a 0FB6      		in r0,__SREG__
+ 186 008c 0F92      		push r0
+ 187 008e 1124      		clr __zero_reg__
+ 188 0090 8F93      		push r24
+ 189               	.LCFI10:
+ 190               		.cfi_def_cfa_offset 5
+ 191               		.cfi_offset 24, -4
+ 192 0092 9F93      		push r25
+ 193               	.LCFI11:
+ 194               		.cfi_def_cfa_offset 6
+ 195               		.cfi_offset 25, -5
+ 196               	/* prologue: Signal */
+ 197               	/* frame size = 0 */
+ 198               	/* stack size = 5 */
+ 199               	.L__stack_usage = 5
+  57:main.c        ****     cli();
+ 200               		.loc 1 57 0
+ 201               	/* #APP */
+ 202               	 ;  57 "main.c" 1
+ 203 0094 F894      		cli
+ 204               	 ;  0 "" 2
+  58:main.c        ****     TCNT1 = 0x10000 - (F_CPU / 256);
+ 205               		.loc 1 58 0
+ 206               	/* #NOAPP */
+ 207 0096 87EF      		ldi r24,lo8(-9)
+ 208 0098 92EC      		ldi r25,lo8(-62)
+ 209 009a 9DBD      		out 0x2c+1,r25
+ 210 009c 8CBD      		out 0x2c,r24
+  59:main.c        **** 
+  60:main.c        ****     SET_FLAG(f_e1sec);
+ 211               		.loc 1 60 0
+ 212 009e 8091 0000 		lds r24,flags
+ 213 00a2 8160      		ori r24,lo8(1)
+ 214 00a4 8093 0000 		sts flags,r24
+  61:main.c        **** 
+  62:main.c        **** //    SET_BIT(time_flag, tf_dps_en);
+  63:main.c        ****     sei();
+ 215               		.loc 1 63 0
+ 216               	/* #APP */
+ 217               	 ;  63 "main.c" 1
+ 218 00a8 7894      		sei
+ 219               	 ;  0 "" 2
+ 220               	/* epilogue start */
+  64:main.c        **** }
+ 221               		.loc 1 64 0
+ 222               	/* #NOAPP */
+ 223 00aa 9F91      		pop r25
+ 224 00ac 8F91      		pop r24
+ 225 00ae 0F90      		pop r0
+ 226 00b0 0FBE      		out __SREG__,r0
+ 227 00b2 0F90      		pop r0
+ 228 00b4 1F90      		pop r1
+ 229 00b6 1895      		reti
+ 230               		.cfi_endproc
+ 231               	.LFE14:
+ 233               	.global	__floatunsisf
+ 234               	.global	__addsf3
+ 235               	.global	__divsf3
+ 236               	.global	getADC
+ 238               	getADC:
+ 239               	.LFB15:
+  65:main.c        **** 
+  66:main.c        **** float getADC()
+  67:main.c        **** {
+ 240               		.loc 1 67 0
+ 241               		.cfi_startproc
+ 242 00b8 CF92      		push r12
+ 243               	.LCFI12:
+ 244               		.cfi_def_cfa_offset 3
+ 245               		.cfi_offset 12, -2
+ 246 00ba DF92      		push r13
+ 247               	.LCFI13:
+ 248               		.cfi_def_cfa_offset 4
+ 249               		.cfi_offset 13, -3
+ 250 00bc EF92      		push r14
+ 251               	.LCFI14:
+ 252               		.cfi_def_cfa_offset 5
+ 253               		.cfi_offset 14, -4
+ 254 00be FF92      		push r15
+ 255               	.LCFI15:
+ 256               		.cfi_def_cfa_offset 6
+ 257               		.cfi_offset 15, -5
+ 258 00c0 CF93      		push r28
+ 259               	.LCFI16:
+ 260               		.cfi_def_cfa_offset 7
+ 261               		.cfi_offset 28, -6
+ 262 00c2 DF93      		push r29
+ 263               	.LCFI17:
+ 264               		.cfi_def_cfa_offset 8
+ 265               		.cfi_offset 29, -7
+ 266               	/* prologue: function */
+ 267               	/* frame size = 0 */
+ 268               	/* stack size = 6 */
+ 269               	.L__stack_usage = 6
+ 270               	.LVL12:
+ 271               		.loc 1 67 0
+ 272 00c4 C6E0      		ldi r28,lo8(6)
+ 273 00c6 D0E0      		ldi r29,0
+  68:main.c        ****     float resf = 0;
+ 274               		.loc 1 68 0
+ 275 00c8 C12C      		mov r12,__zero_reg__
+ 276 00ca D12C      		mov r13,__zero_reg__
+ 277 00cc 7601      		movw r14,r12
+ 278               	.LVL13:
+ 279               	.L7:
+ 280               	.LBB21:
+  69:main.c        ****     for (int i = 0; i < ADC_MCNT; i++) {
+  70:main.c        **** 	ADC_Start();
+ 281               		.loc 1 70 0
+ 282 00ce 00D0      		rcall ADC_Start
+ 283               	.LVL14:
+ 284               	.L6:
+  71:main.c        **** 	while (ADCIsRun())
+ 285               		.loc 1 71 0 discriminator 1
+ 286 00d0 3699      		sbic 0x6,6
+ 287 00d2 00C0      		rjmp .L6
+  72:main.c        **** 	    ;
+  73:main.c        **** 	resf += ADC_GetData();
+ 288               		.loc 1 73 0 discriminator 2
+ 289 00d4 00D0      		rcall ADC_GetData
+ 290               	.LVL15:
+ 291 00d6 BC01      		movw r22,r24
+ 292 00d8 80E0      		ldi r24,0
+ 293 00da 90E0      		ldi r25,0
+ 294 00dc 00D0      		rcall __floatunsisf
+ 295               	.LVL16:
+ 296 00de 9B01      		movw r18,r22
+ 297 00e0 AC01      		movw r20,r24
+ 298 00e2 C701      		movw r24,r14
+ 299 00e4 B601      		movw r22,r12
+ 300 00e6 00D0      		rcall __addsf3
+ 301               	.LVL17:
+ 302 00e8 6B01      		movw r12,r22
+ 303 00ea 7C01      		movw r14,r24
+ 304               	.LVL18:
+ 305 00ec 2197      		sbiw r28,1
+ 306               	.LVL19:
+  69:main.c        **** 	ADC_Start();
+ 307               		.loc 1 69 0 discriminator 2
+ 308 00ee 01F4      		brne .L7
+ 309               	.LVL20:
+ 310               	.LBE21:
+  74:main.c        ****     }
+  75:main.c        **** 
+  76:main.c        ****     resf /= ADC_MCNT;
+  77:main.c        ****     return resf;
+ 311               		.loc 1 77 0
+ 312 00f0 20E0      		ldi r18,0
+ 313 00f2 30E0      		ldi r19,0
+ 314 00f4 40EC      		ldi r20,lo8(-64)
+ 315 00f6 50E4      		ldi r21,lo8(64)
+ 316 00f8 00D0      		rcall __divsf3
+ 317               	.LVL21:
+ 318               	/* epilogue start */
+  78:main.c        **** }
+ 319               		.loc 1 78 0
+ 320 00fa DF91      		pop r29
+ 321 00fc CF91      		pop r28
+ 322               	.LVL22:
+ 323 00fe FF90      		pop r15
+ 324 0100 EF90      		pop r14
+ 325 0102 DF90      		pop r13
+ 326 0104 CF90      		pop r12
+ 327               	.LVL23:
+ 328 0106 0895      		ret
+ 329               		.cfi_endproc
+ 330               	.LFE15:
+ 332               	.global	__subsf3
+ 333               	.global	__mulsf3
+ 334               	.global	calcTemp
+ 336               	calcTemp:
+ 337               	.LFB16:
+  79:main.c        **** 
+  80:main.c        **** 
+  81:main.c        **** float calcTemp(void)
+  82:main.c        **** {
+ 338               		.loc 1 82 0
+ 339               		.cfi_startproc
+ 340               	/* prologue: function */
+ 341               	/* frame size = 0 */
+ 342               	/* stack size = 0 */
+ 343               	.L__stack_usage = 0
+  83:main.c        ****     ADC_Mux(ADC6_Temp);
+ 344               		.loc 1 83 0
+ 345 0108 86E0      		ldi r24,lo8(6)
+ 346 010a 00D0      		rcall ADC_Mux
+ 347               	.LVL24:
+  84:main.c        ****     float resf = getADC();
+ 348               		.loc 1 84 0
+ 349 010c 00D0      		rcall getADC
+ 350               	.LVL25:
+ 351 010e 9B01      		movw r18,r22
+ 352 0110 AC01      		movw r20,r24
+ 353               	.LVL26:
+  85:main.c        **** 
+  86:main.c        ****     resf = 3132.0 / resf - 1;
+ 354               		.loc 1 86 0
+ 355 0112 60E0      		ldi r22,0
+ 356 0114 70EC      		ldi r23,lo8(-64)
+ 357 0116 83E4      		ldi r24,lo8(67)
+ 358 0118 95E4      		ldi r25,lo8(69)
+ 359 011a 00D0      		rcall __divsf3
+ 360               	.LVL27:
+ 361 011c 20E0      		ldi r18,0
+ 362 011e 30E0      		ldi r19,0
+ 363 0120 40E8      		ldi r20,lo8(-128)
+ 364 0122 5FE3      		ldi r21,lo8(63)
+ 365 0124 00D0      		rcall __subsf3
+ 366               	.LVL28:
+ 367 0126 9B01      		movw r18,r22
+ 368 0128 AC01      		movw r20,r24
+ 369               	.LVL29:
+  87:main.c        ****     resf = 100.0 / resf;
+  88:main.c        **** 
+  89:main.c        ****     resf = (TR_NTC_KFC * TR_NTC_T0_GRAD_K) / (TR_NTC_KFC + (TR_NTC_T0_GRAD_K * log(resf / TR_NTC_T0
+ 370               		.loc 1 89 0
+ 371 012a 60E0      		ldi r22,0
+ 372 012c 70E0      		ldi r23,0
+ 373 012e 88EC      		ldi r24,lo8(-56)
+ 374 0130 92E4      		ldi r25,lo8(66)
+ 375 0132 00D0      		rcall __divsf3
+ 376               	.LVL30:
+ 377 0134 20E0      		ldi r18,0
+ 378 0136 30E0      		ldi r19,0
+ 379 0138 40E6      		ldi r20,lo8(96)
+ 380 013a 51E4      		ldi r21,lo8(65)
+ 381 013c 00D0      		rcall __divsf3
+ 382               	.LVL31:
+ 383 013e 00D0      		rcall log
+ 384               	.LVL32:
+  90:main.c        **** 	    + 0.5;
+  91:main.c        **** 
+  92:main.c        ****     return resf;
+ 385               		.loc 1 92 0
+ 386 0140 23E3      		ldi r18,lo8(51)
+ 387 0142 33E9      		ldi r19,lo8(-109)
+ 388 0144 42E9      		ldi r20,lo8(-110)
+ 389 0146 53E4      		ldi r21,lo8(67)
+ 390 0148 00D0      		rcall __mulsf3
+ 391               	.LVL33:
+ 392 014a 20E0      		ldi r18,0
+ 393 014c 30E0      		ldi r19,0
+ 394 014e 4FE2      		ldi r20,lo8(47)
+ 395 0150 55E4      		ldi r21,lo8(69)
+ 396 0152 00D0      		rcall __addsf3
+ 397               	.LVL34:
+ 398 0154 9B01      		movw r18,r22
+ 399 0156 AC01      		movw r20,r24
+ 400 0158 60E4      		ldi r22,lo8(64)
+ 401 015a 75E6      		ldi r23,lo8(101)
+ 402 015c 88E4      		ldi r24,lo8(72)
+ 403 015e 99E4      		ldi r25,lo8(73)
+ 404 0160 00D0      		rcall __divsf3
+ 405               	.LVL35:
+ 406 0162 23E3      		ldi r18,lo8(51)
+ 407 0164 33E9      		ldi r19,lo8(-109)
+ 408 0166 48E8      		ldi r20,lo8(-120)
+ 409 0168 53E4      		ldi r21,lo8(67)
+ 410 016a 00D0      		rcall __subsf3
+ 411               	.LVL36:
+ 412 016c 20E0      		ldi r18,0
+ 413 016e 30E0      		ldi r19,0
+ 414 0170 40E0      		ldi r20,0
+ 415 0172 5FE3      		ldi r21,lo8(63)
+ 416 0174 00D0      		rcall __addsf3
+ 417               	.LVL37:
+  93:main.c        **** }
+ 418               		.loc 1 93 0
+ 419 0176 0895      		ret
+ 420               		.cfi_endproc
+ 421               	.LFE16:
+ 423               	.global	set_def_vals
+ 425               	set_def_vals:
+ 426               	.LFB26:
+ 427               		.cfi_startproc
+ 428               	/* prologue: function */
+ 429               	/* frame size = 0 */
+ 430               	/* stack size = 0 */
+ 431               	.L__stack_usage = 0
+ 432 0178 0895      		ret
+ 433               		.cfi_endproc
+ 434               	.LFE26:
+ 436               	.global	myread_eeprom
+ 438               	myread_eeprom:
+ 439               	.LFB18:
+  94:main.c        **** 
+  95:main.c        **** void set_def_vals(void)
+  96:main.c        **** {
+  97:main.c        **** //    vars.setup_temp = 15;
+  98:main.c        **** //    vars.vent_nom_seg = 4;
+  99:main.c        **** }
+ 100:main.c        **** 
+ 101:main.c        **** void myread_eeprom(void)
+ 102:main.c        **** {
+ 440               		.loc 1 102 0
+ 441               		.cfi_startproc
+ 442               	/* prologue: function */
+ 443               	/* frame size = 0 */
+ 444               	/* stack size = 0 */
+ 445               	.L__stack_usage = 0
+ 103:main.c        ****     cli();
+ 446               		.loc 1 103 0
+ 447               	/* #APP */
+ 448               	 ;  103 "main.c" 1
+ 449 017a F894      		cli
+ 450               	 ;  0 "" 2
+ 104:main.c        ****     eeprom_read_block((uint8_t *) &vars, (void *) EEMEM_VARS, sizeof(vars));
+ 451               		.loc 1 104 0
+ 452               	/* #NOAPP */
+ 453 017c 4AE0      		ldi r20,lo8(10)
+ 454 017e 50E0      		ldi r21,0
+ 455 0180 64E6      		ldi r22,lo8(100)
+ 456 0182 70E0      		ldi r23,0
+ 457 0184 80E0      		ldi r24,lo8(vars)
+ 458 0186 90E0      		ldi r25,hi8(vars)
+ 459 0188 00C0      		rjmp eeprom_read_block
+ 460               	.LVL38:
+ 461               		.cfi_endproc
+ 462               	.LFE18:
+ 464               	.global	myupdate_eeprom
+ 466               	myupdate_eeprom:
+ 467               	.LFB19:
+ 105:main.c        ****     uint8_t tst = eeprom_read_byte((void *) EEMEM_TST);
+ 106:main.c        ****     if (tst != 0xaa) {
+ 107:main.c        **** 	set_def_vals();
+ 108:main.c        ****     }
+ 109:main.c        **** }
+ 110:main.c        **** 
+ 111:main.c        **** void myupdate_eeprom(void)
+ 112:main.c        **** {
+ 468               		.loc 1 112 0
+ 469               		.cfi_startproc
+ 470               	/* prologue: function */
+ 471               	/* frame size = 0 */
+ 472               	/* stack size = 0 */
+ 473               	.L__stack_usage = 0
+ 113:main.c        ****     cli();
+ 474               		.loc 1 113 0
+ 475               	/* #APP */
+ 476               	 ;  113 "main.c" 1
+ 477 018a F894      		cli
+ 478               	 ;  0 "" 2
+ 114:main.c        ****     eeprom_update_block((uint8_t *) &vars, (void *) EEMEM_VARS, sizeof(vars));
+ 479               		.loc 1 114 0
+ 480               	/* #NOAPP */
+ 481 018c 4AE0      		ldi r20,lo8(10)
+ 482 018e 50E0      		ldi r21,0
+ 483 0190 64E6      		ldi r22,lo8(100)
+ 484 0192 70E0      		ldi r23,0
+ 485 0194 80E0      		ldi r24,lo8(vars)
+ 486 0196 90E0      		ldi r25,hi8(vars)
+ 487 0198 00D0      		rcall eeprom_update_block
+ 488               	.LVL39:
+ 115:main.c        ****     eeprom_update_byte((void *) EEMEM_TST, 0xaa);
+ 489               		.loc 1 115 0
+ 490 019a 6AEA      		ldi r22,lo8(-86)
+ 491 019c 82E3      		ldi r24,lo8(50)
+ 492 019e 90E0      		ldi r25,0
+ 493 01a0 00C0      		rjmp eeprom_update_byte
+ 494               	.LVL40:
+ 495               		.cfi_endproc
+ 496               	.LFE19:
+ 498               	.global	calcCond
+ 500               	calcCond:
+ 501               	.LFB20:
+ 116:main.c        **** }
+ 117:main.c        **** 
+ 118:main.c        **** 
+ 119:main.c        **** 
+ 120:main.c        **** void calcCond(void)
+ 121:main.c        **** {
+ 502               		.loc 1 121 0
+ 503               		.cfi_startproc
+ 504               	/* prologue: function */
+ 505               	/* frame size = 0 */
+ 506               	/* stack size = 0 */
+ 507               	.L__stack_usage = 0
+ 508 01a2 0895      		ret
+ 509               		.cfi_endproc
+ 510               	.LFE20:
+ 512               	.global	calcVent
+ 514               	calcVent:
+ 515               	.LFB21:
+ 122:main.c        **** }
+ 123:main.c        **** 
+ 124:main.c        **** void calcVent(float delta, float id)
+ 125:main.c        **** {
+ 516               		.loc 1 125 0
+ 517               		.cfi_startproc
+ 518               	.LVL41:
+ 519               	/* prologue: function */
+ 520               	/* frame size = 0 */
+ 521               	/* stack size = 0 */
+ 522               	.L__stack_usage = 0
+ 523 01a4 0895      		ret
+ 524               		.cfi_endproc
+ 525               	.LFE21:
+ 527               		.section	.rodata.str1.1
+ 528               	.LC2:
+ 529 0005 5469 00   		.string	"Ti"
+ 530               	.LC3:
+ 531 0008 5473 00   		.string	"Ts"
+ 532               	.LC4:
+ 533 000b 5374 00   		.string	"St"
+ 534               	.LC5:
+ 535 000e 6C44 00   		.string	"lD"
+ 536               	.global	__floatsisf
+ 537               	.global	__ltsf2
+ 538               	.LC6:
+ 539 0011 4474 00   		.string	"Dt"
+ 540               	.LC7:
+ 541 0014 4964 00   		.string	"Id"
+ 542               	.LC8:
+ 543 0017 4970 00   		.string	"Ip"
+ 544               	.LC9:
+ 545 001a 7069 6400 		.string	"pid"
+ 546               	.global	__fixunssfsi
+ 547               	.LC10:
+ 548 001e 6F75 7400 		.string	"out"
+ 549               		.text
+ 550               	.global	calcVal
+ 552               	calcVal:
+ 553               	.LFB22:
+ 126:main.c        **** }
+ 127:main.c        **** 
+ 128:main.c        **** 
+ 129:main.c        **** 
+ 130:main.c        **** void calcVal(void)
+ 131:main.c        **** {
+ 554               		.loc 1 131 0
+ 555               		.cfi_startproc
+ 556               		.loc 1 131 0
+ 557 01a6 8F92      		push r8
+ 558               	.LCFI18:
+ 559               		.cfi_def_cfa_offset 3
+ 560               		.cfi_offset 8, -2
+ 561 01a8 9F92      		push r9
+ 562               	.LCFI19:
+ 563               		.cfi_def_cfa_offset 4
+ 564               		.cfi_offset 9, -3
+ 565 01aa AF92      		push r10
+ 566               	.LCFI20:
+ 567               		.cfi_def_cfa_offset 5
+ 568               		.cfi_offset 10, -4
+ 569 01ac BF92      		push r11
+ 570               	.LCFI21:
+ 571               		.cfi_def_cfa_offset 6
+ 572               		.cfi_offset 11, -5
+ 573 01ae CF92      		push r12
+ 574               	.LCFI22:
+ 575               		.cfi_def_cfa_offset 7
+ 576               		.cfi_offset 12, -6
+ 577 01b0 DF92      		push r13
+ 578               	.LCFI23:
+ 579               		.cfi_def_cfa_offset 8
+ 580               		.cfi_offset 13, -7
+ 581 01b2 EF92      		push r14
+ 582               	.LCFI24:
+ 583               		.cfi_def_cfa_offset 9
+ 584               		.cfi_offset 14, -8
+ 585 01b4 FF92      		push r15
+ 586               	.LCFI25:
+ 587               		.cfi_def_cfa_offset 10
+ 588               		.cfi_offset 15, -9
+ 589 01b6 0F93      		push r16
+ 590               	.LCFI26:
+ 591               		.cfi_def_cfa_offset 11
+ 592               		.cfi_offset 16, -10
+ 593 01b8 1F93      		push r17
+ 594               	.LCFI27:
+ 595               		.cfi_def_cfa_offset 12
+ 596               		.cfi_offset 17, -11
+ 597 01ba CF93      		push r28
+ 598               	.LCFI28:
+ 599               		.cfi_def_cfa_offset 13
+ 600               		.cfi_offset 28, -12
+ 601               	/* prologue: function */
+ 602               	/* frame size = 0 */
+ 603               	/* stack size = 11 */
+ 604               	.L__stack_usage = 11
+ 132:main.c        ****     calcCond();
+ 133:main.c        **** 
+ 134:main.c        ****     int_to_uart("Ti", Ti);
+ 605               		.loc 1 134 0
+ 606 01bc 6091 0000 		lds r22,Ti
+ 607 01c0 7091 0000 		lds r23,Ti+1
+ 608 01c4 8091 0000 		lds r24,Ti+2
+ 609 01c8 9091 0000 		lds r25,Ti+3
+ 610 01cc 00D0      		rcall __fixsfsi
+ 611               	.LVL42:
+ 612 01ce 80E0      		ldi r24,lo8(.LC2)
+ 613 01d0 90E0      		ldi r25,hi8(.LC2)
+ 614 01d2 00D0      		rcall int_to_uart
+ 615               	.LVL43:
+ 135:main.c        ****     int_to_uart("Ts", Ts);
+ 616               		.loc 1 135 0
+ 617 01d4 6091 0000 		lds r22,Ts
+ 618 01d8 7091 0000 		lds r23,Ts+1
+ 619 01dc 8091 0000 		lds r24,Ts+2
+ 620 01e0 9091 0000 		lds r25,Ts+3
+ 621 01e4 00D0      		rcall __fixsfsi
+ 622               	.LVL44:
+ 623 01e6 80E0      		ldi r24,lo8(.LC3)
+ 624 01e8 90E0      		ldi r25,hi8(.LC3)
+ 625 01ea 00D0      		rcall int_to_uart
+ 626               	.LVL45:
+ 136:main.c        ****     int_to_uart("St", vars.setup_temp);
+ 627               		.loc 1 136 0
+ 628 01ec 6091 0000 		lds r22,vars+1
+ 629 01f0 062E      		mov __tmp_reg__,r22
+ 630 01f2 000C      		lsl r0
+ 631 01f4 770B      		sbc r23,r23
+ 632 01f6 80E0      		ldi r24,lo8(.LC4)
+ 633 01f8 90E0      		ldi r25,hi8(.LC4)
+ 634 01fa 00D0      		rcall int_to_uart
+ 635               	.LVL46:
+ 137:main.c        ****     float_to_uart("lD", last_delta);
+ 636               		.loc 1 137 0
+ 637 01fc 6091 0000 		lds r22,last_delta
+ 638 0200 7091 0000 		lds r23,last_delta+1
+ 639 0204 8091 0000 		lds r24,last_delta+2
+ 640 0208 9091 0000 		lds r25,last_delta+3
+ 641               	.LVL47:
+ 642               	.LBB22:
+ 643               	.LBB23:
+  39:main.c        ****     /*    USART_SendStr(id);
+ 644               		.loc 1 39 0
+ 645 020c 00D0      		rcall __fixsfsi
+ 646               	.LVL48:
+ 647 020e 80E0      		ldi r24,lo8(.LC5)
+ 648 0210 90E0      		ldi r25,hi8(.LC5)
+ 649 0212 00D0      		rcall int_to_uart
+ 650               	.LVL49:
+ 651               	.LBE23:
+ 652               	.LBE22:
+ 138:main.c        ****     float delta = (float) vars.setup_temp;
+ 653               		.loc 1 138 0
+ 654 0214 6091 0000 		lds r22,vars+1
+ 655               	.LVL50:
+ 139:main.c        ****     delta = check_rangef(-40.0, delta - Ts, 40.0);
+ 656               		.loc 1 139 0
+ 657 0218 C090 0000 		lds r12,Ts
+ 658 021c D090 0000 		lds r13,Ts+1
+ 659 0220 E090 0000 		lds r14,Ts+2
+ 660 0224 F090 0000 		lds r15,Ts+3
+ 661 0228 062E      		mov __tmp_reg__,r22
+ 662 022a 000C      		lsl r0
+ 663 022c 770B      		sbc r23,r23
+ 664 022e 880B      		sbc r24,r24
+ 665 0230 990B      		sbc r25,r25
+ 666 0232 00D0      		rcall __floatsisf
+ 667               	.LVL51:
+ 668 0234 A701      		movw r20,r14
+ 669 0236 9601      		movw r18,r12
+ 670 0238 00D0      		rcall __subsf3
+ 671               	.LVL52:
+ 672 023a 9B01      		movw r18,r22
+ 673 023c AC01      		movw r20,r24
+ 674 023e E12C      		mov r14,__zero_reg__
+ 675 0240 F12C      		mov r15,__zero_reg__
+ 676 0242 00E2      		ldi r16,lo8(32)
+ 677 0244 12E4      		ldi r17,lo8(66)
+ 678 0246 60E0      		ldi r22,0
+ 679 0248 70E0      		ldi r23,0
+ 680 024a 80E2      		ldi r24,lo8(32)
+ 681 024c 92EC      		ldi r25,lo8(-62)
+ 682 024e 00D0      		rcall check_rangef
+ 683               	.LVL53:
+ 684 0250 6B01      		movw r12,r22
+ 685 0252 7C01      		movw r14,r24
+ 686               	.LVL54:
+ 140:main.c        ****     if (fabs(delta) < 0.2) {
+ 687               		.loc 1 140 0
+ 688 0254 9F77      		andi r25,0x7f
+ 689 0256 2DEC      		ldi r18,lo8(-51)
+ 690 0258 3CEC      		ldi r19,lo8(-52)
+ 691 025a 4CE4      		ldi r20,lo8(76)
+ 692 025c 5EE3      		ldi r21,lo8(62)
+ 693 025e 00D0      		rcall __ltsf2
+ 694               	.LVL55:
+ 695 0260 87FF      		sbrs r24,7
+ 696 0262 00C0      		rjmp .L18
+ 141:main.c        ****     delta = 0.0;
+ 697               		.loc 1 141 0
+ 698 0264 C12C      		mov r12,__zero_reg__
+ 699 0266 D12C      		mov r13,__zero_reg__
+ 700 0268 7601      		movw r14,r12
+ 701               	.LVL56:
+ 702               	.L18:
+ 703               	.LBB24:
+ 704               	.LBB25:
+  39:main.c        ****     /*    USART_SendStr(id);
+ 705               		.loc 1 39 0
+ 706 026a C701      		movw r24,r14
+ 707 026c B601      		movw r22,r12
+ 708 026e 00D0      		rcall __fixsfsi
+ 709               	.LVL57:
+ 710 0270 80E0      		ldi r24,lo8(.LC6)
+ 711 0272 90E0      		ldi r25,hi8(.LC6)
+ 712 0274 00D0      		rcall int_to_uart
+ 713               	.LVL58:
+ 714               	.LBE25:
+ 715               	.LBE24:
+ 142:main.c        ****     }
+ 143:main.c        ****     float_to_uart("Dt", delta);
+ 144:main.c        ****     float id = delta - last_delta;
+ 716               		.loc 1 144 0
+ 717 0276 2091 0000 		lds r18,last_delta
+ 718 027a 3091 0000 		lds r19,last_delta+1
+ 719 027e 4091 0000 		lds r20,last_delta+2
+ 720 0282 5091 0000 		lds r21,last_delta+3
+ 721 0286 C701      		movw r24,r14
+ 722 0288 B601      		movw r22,r12
+ 723 028a 00D0      		rcall __subsf3
+ 724               	.LVL59:
+ 725 028c 4B01      		movw r8,r22
+ 726 028e 5C01      		movw r10,r24
+ 727               	.LVL60:
+ 145:main.c        ****     last_delta = delta;
+ 728               		.loc 1 145 0
+ 729 0290 C092 0000 		sts last_delta,r12
+ 730 0294 D092 0000 		sts last_delta+1,r13
+ 731 0298 E092 0000 		sts last_delta+2,r14
+ 732 029c F092 0000 		sts last_delta+3,r15
+ 733               	.LVL61:
+ 734               	.LBB26:
+ 735               	.LBB27:
+  39:main.c        ****     /*    USART_SendStr(id);
+ 736               		.loc 1 39 0
+ 737 02a0 00D0      		rcall __fixsfsi
+ 738               	.LVL62:
+ 739 02a2 80E0      		ldi r24,lo8(.LC7)
+ 740 02a4 90E0      		ldi r25,hi8(.LC7)
+ 741 02a6 00D0      		rcall int_to_uart
+ 742               	.LVL63:
+ 743               	.LBE27:
+ 744               	.LBE26:
+ 146:main.c        ****     float_to_uart("Id", id);
+ 147:main.c        **** 
+ 148:main.c        ****     Ipid += delta;
+ 745               		.loc 1 148 0
+ 746 02a8 2091 0000 		lds r18,Ipid
+ 747 02ac 3091 0000 		lds r19,Ipid+1
+ 748 02b0 4091 0000 		lds r20,Ipid+2
+ 749 02b4 5091 0000 		lds r21,Ipid+3
+ 750 02b8 C701      		movw r24,r14
+ 751 02ba B601      		movw r22,r12
+ 752 02bc 00D0      		rcall __addsf3
+ 753               	.LVL64:
+ 754 02be 6093 0000 		sts Ipid,r22
+ 755 02c2 7093 0000 		sts Ipid+1,r23
+ 756 02c6 8093 0000 		sts Ipid+2,r24
+ 757 02ca 9093 0000 		sts Ipid+3,r25
+ 149:main.c        **** 
+ 150:main.c        ****     float pid = (delta + (Ipid * (float) PID_I_KFC) / 100.0 + (id * (float) PID_D_KFC) / 100.0)
+ 758               		.loc 1 150 0
+ 759 02ce 6091 0000 		lds r22,Ipid
+ 760 02d2 7091 0000 		lds r23,Ipid+1
+ 761 02d6 8091 0000 		lds r24,Ipid+2
+ 762 02da 9091 0000 		lds r25,Ipid+3
+ 151:main.c        ****         * (float) vars.pid_P_kfc;
+ 763               		.loc 1 151 0
+ 764 02de C091 0000 		lds r28,vars+4
+ 150:main.c        ****         * (float) vars.pid_P_kfc;
+ 765               		.loc 1 150 0
+ 766 02e2 9B01      		movw r18,r22
+ 767 02e4 AC01      		movw r20,r24
+ 768 02e6 00D0      		rcall __addsf3
+ 769               	.LVL65:
+ 770 02e8 20E0      		ldi r18,0
+ 771 02ea 30E0      		ldi r19,0
+ 772 02ec 48EC      		ldi r20,lo8(-56)
+ 773 02ee 52E4      		ldi r21,lo8(66)
+ 774 02f0 00D0      		rcall __divsf3
+ 775               	.LVL66:
+ 776 02f2 A701      		movw r20,r14
+ 777 02f4 9601      		movw r18,r12
+ 778 02f6 00D0      		rcall __addsf3
+ 779               	.LVL67:
+ 780 02f8 6B01      		movw r12,r22
+ 781 02fa 7C01      		movw r14,r24
+ 782               	.LVL68:
+ 783 02fc 20E0      		ldi r18,0
+ 784 02fe 30E0      		ldi r19,0
+ 785 0300 40E2      		ldi r20,lo8(32)
+ 786 0302 51E4      		ldi r21,lo8(65)
+ 787 0304 C501      		movw r24,r10
+ 788 0306 B401      		movw r22,r8
+ 789 0308 00D0      		rcall __mulsf3
+ 790               	.LVL69:
+ 791 030a 20E0      		ldi r18,0
+ 792 030c 30E0      		ldi r19,0
+ 793 030e 48EC      		ldi r20,lo8(-56)
+ 794 0310 52E4      		ldi r21,lo8(66)
+ 795 0312 00D0      		rcall __divsf3
+ 796               	.LVL70:
+ 797 0314 9B01      		movw r18,r22
+ 798 0316 AC01      		movw r20,r24
+ 799 0318 C701      		movw r24,r14
+ 800 031a B601      		movw r22,r12
+ 801 031c 00D0      		rcall __addsf3
+ 802               	.LVL71:
+ 803 031e 6B01      		movw r12,r22
+ 804 0320 7C01      		movw r14,r24
+ 805 0322 6C2F      		mov r22,r28
+ 806 0324 CC0F      		lsl r28
+ 807 0326 770B      		sbc r23,r23
+ 808 0328 880B      		sbc r24,r24
+ 809 032a 990B      		sbc r25,r25
+ 810 032c 00D0      		rcall __floatsisf
+ 811               	.LVL72:
+ 812 032e 9B01      		movw r18,r22
+ 813 0330 AC01      		movw r20,r24
+ 814 0332 C701      		movw r24,r14
+ 815 0334 B601      		movw r22,r12
+ 816 0336 00D0      		rcall __mulsf3
+ 817               	.LVL73:
+ 818 0338 4B01      		movw r8,r22
+ 819 033a 5C01      		movw r10,r24
+ 820               	.LVL74:
+ 152:main.c        **** 
+ 153:main.c        ****     float_to_uart("Ip", Ipid);
+ 821               		.loc 1 153 0
+ 822 033c 6091 0000 		lds r22,Ipid
+ 823 0340 7091 0000 		lds r23,Ipid+1
+ 824 0344 8091 0000 		lds r24,Ipid+2
+ 825 0348 9091 0000 		lds r25,Ipid+3
+ 826               	.LVL75:
+ 827               	.LBB28:
+ 828               	.LBB29:
+  39:main.c        ****     /*    USART_SendStr(id);
+ 829               		.loc 1 39 0
+ 830 034c 00D0      		rcall __fixsfsi
+ 831               	.LVL76:
+ 832 034e 80E0      		ldi r24,lo8(.LC8)
+ 833 0350 90E0      		ldi r25,hi8(.LC8)
+ 834 0352 00D0      		rcall int_to_uart
+ 835               	.LVL77:
+ 836               	.LBE29:
+ 837               	.LBE28:
+ 838               	.LBB30:
+ 839               	.LBB31:
+ 840 0354 C501      		movw r24,r10
+ 841 0356 B401      		movw r22,r8
+ 842 0358 00D0      		rcall __fixsfsi
+ 843               	.LVL78:
+ 844 035a 80E0      		ldi r24,lo8(.LC9)
+ 845 035c 90E0      		ldi r25,hi8(.LC9)
+ 846 035e 00D0      		rcall int_to_uart
+ 847               	.LVL79:
+ 848               	.LBE31:
+ 849               	.LBE30:
+ 154:main.c        ****     float_to_uart("pid", pid);
+ 155:main.c        **** /*
+ 156:main.c        ****     if (!(pid > 100.0 && delta > 0.0)) {
+ 157:main.c        ****     if (!(pid < 0.0 && delta < 0.0)) {
+ 158:main.c        ****         Ipid += delta;
+ 159:main.c        ****     }
+ 160:main.c        ****     }
+ 161:main.c        **** */
+ 162:main.c        **** 
+ 163:main.c        ****     temp_out_delay++;
+ 850               		.loc 1 163 0
+ 851 0360 8091 0000 		lds r24,temp_out_delay
+ 852 0364 8F5F      		subi r24,lo8(-(1))
+ 853 0366 8093 0000 		sts temp_out_delay,r24
+ 164:main.c        ****     if (temp_out_delay > vars.temp_seg_delay) {
+ 854               		.loc 1 164 0
+ 855 036a 2091 0000 		lds r18,temp_out_delay
+ 856 036e 8091 0000 		lds r24,vars+6
+ 857 0372 30E0      		ldi r19,0
+ 858 0374 082E      		mov __tmp_reg__,r24
+ 859 0376 000C      		lsl r0
+ 860 0378 990B      		sbc r25,r25
+ 861 037a 8217      		cp r24,r18
+ 862 037c 9307      		cpc r25,r19
+ 863 037e 04F4      		brge .L20
+ 165:main.c        ****     temp_out_delay = 0;
+ 864               		.loc 1 165 0
+ 865 0380 1092 0000 		sts temp_out_delay,__zero_reg__
+ 166:main.c        ****     temp_out_prc = (check_rangef(0, pid, 101) + temp_out_prc) / 2;
+ 866               		.loc 1 166 0
+ 867 0384 E12C      		mov r14,__zero_reg__
+ 868 0386 F12C      		mov r15,__zero_reg__
+ 869 0388 0AEC      		ldi r16,lo8(-54)
+ 870 038a 12E4      		ldi r17,lo8(66)
+ 871 038c A501      		movw r20,r10
+ 872 038e 9401      		movw r18,r8
+ 873 0390 60E0      		ldi r22,0
+ 874 0392 70E0      		ldi r23,0
+ 875 0394 CB01      		movw r24,r22
+ 876 0396 00D0      		rcall check_rangef
+ 877               	.LVL80:
+ 878 0398 6B01      		movw r12,r22
+ 879 039a 7C01      		movw r14,r24
+ 880 039c 6091 0000 		lds r22,temp_out_prc
+ 881 03a0 70E0      		ldi r23,0
+ 882 03a2 80E0      		ldi r24,0
+ 883 03a4 90E0      		ldi r25,0
+ 884 03a6 00D0      		rcall __floatsisf
+ 885               	.LVL81:
+ 886 03a8 A701      		movw r20,r14
+ 887 03aa 9601      		movw r18,r12
+ 888 03ac 00D0      		rcall __addsf3
+ 889               	.LVL82:
+ 890 03ae 20E0      		ldi r18,0
+ 891 03b0 30E0      		ldi r19,0
+ 892 03b2 40E0      		ldi r20,0
+ 893 03b4 5FE3      		ldi r21,lo8(63)
+ 894 03b6 00D0      		rcall __mulsf3
+ 895               	.LVL83:
+ 896 03b8 00D0      		rcall __fixunssfsi
+ 897               	.LVL84:
+ 898 03ba 6093 0000 		sts temp_out_prc,r22
+ 899               	.L20:
+ 167:main.c        ****     }
+ 168:main.c        **** 
+ 169:main.c        ****     int_to_uart("out", temp_out_prc);
+ 900               		.loc 1 169 0
+ 901 03be 6091 0000 		lds r22,temp_out_prc
+ 902 03c2 70E0      		ldi r23,0
+ 903 03c4 80E0      		ldi r24,lo8(.LC10)
+ 904 03c6 90E0      		ldi r25,hi8(.LC10)
+ 905 03c8 00D0      		rcall int_to_uart
+ 906               	.LVL85:
+ 907               	/* epilogue start */
+ 170:main.c        **** 
+ 171:main.c        ****     calcVent(delta, id);
+ 172:main.c        **** 
+ 173:main.c        ****     uart_nl();
+ 174:main.c        **** }
+ 908               		.loc 1 174 0
+ 909 03ca CF91      		pop r28
+ 910 03cc 1F91      		pop r17
+ 911 03ce 0F91      		pop r16
+ 912 03d0 FF90      		pop r15
+ 913 03d2 EF90      		pop r14
+ 914 03d4 DF90      		pop r13
+ 915 03d6 CF90      		pop r12
+ 916 03d8 BF90      		pop r11
+ 917 03da AF90      		pop r10
+ 918 03dc 9F90      		pop r9
+ 919 03de 8F90      		pop r8
+ 920               	.LVL86:
+ 173:main.c        **** }
+ 921               		.loc 1 173 0
+ 922 03e0 00C0      		rjmp uart_nl
+ 923               	.LVL87:
+ 924               		.cfi_endproc
+ 925               	.LFE22:
+ 927               	.global	setup_pins
+ 929               	setup_pins:
+ 930               	.LFB23:
+ 175:main.c        **** 
+ 176:main.c        **** 
+ 177:main.c        **** void setup_pins(void)
+ 178:main.c        **** {
+ 931               		.loc 1 178 0
+ 932               		.cfi_startproc
+ 933               	/* prologue: function */
+ 934               	/* frame size = 0 */
+ 935               	/* stack size = 0 */
+ 936               	.L__stack_usage = 0
+ 179:main.c        ****     PORTB = 0;
+ 937               		.loc 1 179 0
+ 938 03e2 18BA      		out 0x18,__zero_reg__
+ 180:main.c        ****     PORTC = 0;
+ 939               		.loc 1 180 0
+ 940 03e4 15BA      		out 0x15,__zero_reg__
+ 181:main.c        ****     PORTD = 0;
+ 941               		.loc 1 181 0
+ 942 03e6 12BA      		out 0x12,__zero_reg__
+ 182:main.c        ****     DDRB = 0; //dir to in
+ 943               		.loc 1 182 0
+ 944 03e8 17BA      		out 0x17,__zero_reg__
+ 183:main.c        ****     DDRC = 0; //dir to in
+ 945               		.loc 1 183 0
+ 946 03ea 14BA      		out 0x14,__zero_reg__
+ 184:main.c        ****     DDRD = 0; //dir to in
+ 947               		.loc 1 184 0
+ 948 03ec 11BA      		out 0x11,__zero_reg__
+ 185:main.c        ****     /*    set_dir_in(IN_BTN_HI_MODE);
+ 186:main.c        ****      set_dir_in(IN_BTN_SETUP);
+ 187:main.c        ****      set_dir_in(IN_BTN_T_UP);
+ 188:main.c        ****      set_dir_in(IN_BTN_T_DWN);
+ 189:main.c        ****      set_dir_in(IN_BTN_V_UP);
+ 190:main.c        ****      set_dir_in(IN_BTN_V_DWN);
+ 191:main.c        ****      set_dir_in(IN_ACC);
+ 192:main.c        ****      IN_NIGHT_BR
+ 193:main.c        ****      set_dir_in(IN_FROST_BTN);*/
+ 194:main.c        **** 
+ 195:main.c        ****     pin_low(OUT_CH_1);
+ 949               		.loc 1 195 0
+ 950 03ee AC98      		cbi 0x15,4
+ 196:main.c        ****     set_dir_out(OUT_CH_1);
+ 951               		.loc 1 196 0
+ 952 03f0 A49A      		sbi 0x14,4
+ 197:main.c        ****     pin_low(OUT_CH_2);
+ 953               		.loc 1 197 0
+ 954 03f2 A998      		cbi 0x15,1
+ 198:main.c        ****     set_dir_out(OUT_CH_2);
+ 955               		.loc 1 198 0
+ 956 03f4 A19A      		sbi 0x14,1
+ 199:main.c        **** 
+ 200:main.c        ****     pin_low(OUT_CH_LED_1);
+ 957               		.loc 1 200 0
+ 958 03f6 A898      		cbi 0x15,0
+ 201:main.c        ****     set_dir_out(OUT_CH_LED_1);
+ 959               		.loc 1 201 0
+ 960 03f8 A09A      		sbi 0x14,0
+ 202:main.c        ****     pin_low(OUT_CH_LED_2);
+ 961               		.loc 1 202 0
+ 962 03fa AD98      		cbi 0x15,5
+ 203:main.c        ****     set_dir_out(OUT_CH_LED_2);
+ 963               		.loc 1 203 0
+ 964 03fc A59A      		sbi 0x14,5
+ 965 03fe 0895      		ret
+ 966               		.cfi_endproc
+ 967               	.LFE23:
+ 969               		.section	.rodata.str1.1
+ 970               	.LC11:
+ 971 0022 2A2A 2A2A 		.string	"******begin************"
+ 971      2A2A 6265 
+ 971      6769 6E2A 
+ 971      2A2A 2A2A 
+ 971      2A2A 2A2A 
+ 972               	.LC12:
+ 973 003a 7469 6D65 		.string	"time"
+ 973      00
+ 974               		.section	.text.startup,"ax",@progbits
+ 975               	.global	main
+ 977               	main:
+ 978               	.LFB24:
+ 204:main.c        **** }
+ 205:main.c        **** 
+ 206:main.c        **** int main(void)
+ 207:main.c        **** {
+ 979               		.loc 1 207 0
+ 980               		.cfi_startproc
+ 981 0000 CF93      		push r28
+ 982               	.LCFI29:
+ 983               		.cfi_def_cfa_offset 3
+ 984               		.cfi_offset 28, -2
+ 985 0002 DF93      		push r29
+ 986               	.LCFI30:
+ 987               		.cfi_def_cfa_offset 4
+ 988               		.cfi_offset 29, -3
+ 989               	/* prologue: function */
+ 990               	/* frame size = 0 */
+ 991               	/* stack size = 2 */
+ 992               	.L__stack_usage = 2
+ 993               	.LVL88:
+ 208:main.c        ****     uint8_t time_cnt = 0;
+ 209:main.c        ****     wdt_reset();
+ 994               		.loc 1 209 0
+ 995               	/* #APP */
+ 996               	 ;  209 "main.c" 1
+ 997 0004 A895      		wdr
+ 998               	 ;  0 "" 2
+ 210:main.c        ****     cli();
+ 999               		.loc 1 210 0
+ 1000               	 ;  210 "main.c" 1
+ 1001 0006 F894      		cli
+ 1002               	 ;  0 "" 2
+ 1003               	.LVL89:
+ 1004               	/* #NOAPP */
+ 1005               	.LBB32:
+ 1006               	.LBB33:
+ 1007               		.file 2 "/usr/lib/avr/include/avr/wdt.h"
+   1:/usr/lib/avr/include/avr/wdt.h **** /* Copyright (c) 2002, 2004 Marek Michalkiewicz
+   2:/usr/lib/avr/include/avr/wdt.h ****    Copyright (c) 2005, 2006, 2007 Eric B. Weddington
+   3:/usr/lib/avr/include/avr/wdt.h ****    All rights reserved.
+   4:/usr/lib/avr/include/avr/wdt.h **** 
+   5:/usr/lib/avr/include/avr/wdt.h ****    Redistribution and use in source and binary forms, with or without
+   6:/usr/lib/avr/include/avr/wdt.h ****    modification, are permitted provided that the following conditions are met:
+   7:/usr/lib/avr/include/avr/wdt.h **** 
+   8:/usr/lib/avr/include/avr/wdt.h ****    * Redistributions of source code must retain the above copyright
+   9:/usr/lib/avr/include/avr/wdt.h ****      notice, this list of conditions and the following disclaimer.
+  10:/usr/lib/avr/include/avr/wdt.h **** 
+  11:/usr/lib/avr/include/avr/wdt.h ****    * Redistributions in binary form must reproduce the above copyright
+  12:/usr/lib/avr/include/avr/wdt.h ****      notice, this list of conditions and the following disclaimer in
+  13:/usr/lib/avr/include/avr/wdt.h ****      the documentation and/or other materials provided with the
+  14:/usr/lib/avr/include/avr/wdt.h ****      distribution.
+  15:/usr/lib/avr/include/avr/wdt.h **** 
+  16:/usr/lib/avr/include/avr/wdt.h ****    * Neither the name of the copyright holders nor the names of
+  17:/usr/lib/avr/include/avr/wdt.h ****      contributors may be used to endorse or promote products derived
+  18:/usr/lib/avr/include/avr/wdt.h ****      from this software without specific prior written permission.
+  19:/usr/lib/avr/include/avr/wdt.h **** 
+  20:/usr/lib/avr/include/avr/wdt.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:/usr/lib/avr/include/avr/wdt.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:/usr/lib/avr/include/avr/wdt.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:/usr/lib/avr/include/avr/wdt.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  24:/usr/lib/avr/include/avr/wdt.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  25:/usr/lib/avr/include/avr/wdt.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  26:/usr/lib/avr/include/avr/wdt.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  27:/usr/lib/avr/include/avr/wdt.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  28:/usr/lib/avr/include/avr/wdt.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  29:/usr/lib/avr/include/avr/wdt.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  30:/usr/lib/avr/include/avr/wdt.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  31:/usr/lib/avr/include/avr/wdt.h **** 
+  32:/usr/lib/avr/include/avr/wdt.h **** /* $Id$ */
+  33:/usr/lib/avr/include/avr/wdt.h **** 
+  34:/usr/lib/avr/include/avr/wdt.h **** /*
+  35:/usr/lib/avr/include/avr/wdt.h ****    avr/wdt.h - macros for AVR watchdog timer
+  36:/usr/lib/avr/include/avr/wdt.h ****  */
+  37:/usr/lib/avr/include/avr/wdt.h **** 
+  38:/usr/lib/avr/include/avr/wdt.h **** #ifndef _AVR_WDT_H_
+  39:/usr/lib/avr/include/avr/wdt.h **** #define _AVR_WDT_H_
+  40:/usr/lib/avr/include/avr/wdt.h **** 
+  41:/usr/lib/avr/include/avr/wdt.h **** #include <avr/io.h>
+  42:/usr/lib/avr/include/avr/wdt.h **** #include <stdint.h>
+  43:/usr/lib/avr/include/avr/wdt.h **** 
+  44:/usr/lib/avr/include/avr/wdt.h **** /** \file */
+  45:/usr/lib/avr/include/avr/wdt.h **** /** \defgroup avr_watchdog <avr/wdt.h>: Watchdog timer handling
+  46:/usr/lib/avr/include/avr/wdt.h ****     \code #include <avr/wdt.h> \endcode
+  47:/usr/lib/avr/include/avr/wdt.h **** 
+  48:/usr/lib/avr/include/avr/wdt.h ****     This header file declares the interface to some inline macros
+  49:/usr/lib/avr/include/avr/wdt.h ****     handling the watchdog timer present in many AVR devices.  In order
+  50:/usr/lib/avr/include/avr/wdt.h ****     to prevent the watchdog timer configuration from being
+  51:/usr/lib/avr/include/avr/wdt.h ****     accidentally altered by a crashing application, a special timed
+  52:/usr/lib/avr/include/avr/wdt.h ****     sequence is required in order to change it.  The macros within
+  53:/usr/lib/avr/include/avr/wdt.h ****     this header file handle the required sequence automatically
+  54:/usr/lib/avr/include/avr/wdt.h ****     before changing any value.  Interrupts will be disabled during
+  55:/usr/lib/avr/include/avr/wdt.h ****     the manipulation.
+  56:/usr/lib/avr/include/avr/wdt.h **** 
+  57:/usr/lib/avr/include/avr/wdt.h ****     \note Depending on the fuse configuration of the particular
+  58:/usr/lib/avr/include/avr/wdt.h ****     device, further restrictions might apply, in particular it might
+  59:/usr/lib/avr/include/avr/wdt.h ****     be disallowed to turn off the watchdog timer.
+  60:/usr/lib/avr/include/avr/wdt.h **** 
+  61:/usr/lib/avr/include/avr/wdt.h ****     Note that for newer devices (ATmega88 and newer, effectively any
+  62:/usr/lib/avr/include/avr/wdt.h ****     AVR that has the option to also generate interrupts), the watchdog
+  63:/usr/lib/avr/include/avr/wdt.h ****     timer remains active even after a system reset (except a power-on
+  64:/usr/lib/avr/include/avr/wdt.h ****     condition), using the fastest prescaler value (approximately 15
+  65:/usr/lib/avr/include/avr/wdt.h ****     ms).  It is therefore required to turn off the watchdog early
+  66:/usr/lib/avr/include/avr/wdt.h ****     during program startup, the datasheet recommends a sequence like
+  67:/usr/lib/avr/include/avr/wdt.h ****     the following:
+  68:/usr/lib/avr/include/avr/wdt.h **** 
+  69:/usr/lib/avr/include/avr/wdt.h ****     \code
+  70:/usr/lib/avr/include/avr/wdt.h ****     #include <stdint.h>
+  71:/usr/lib/avr/include/avr/wdt.h ****     #include <avr/wdt.h>
+  72:/usr/lib/avr/include/avr/wdt.h **** 
+  73:/usr/lib/avr/include/avr/wdt.h ****     uint8_t mcusr_mirror __attribute__ ((section (".noinit")));
+  74:/usr/lib/avr/include/avr/wdt.h **** 
+  75:/usr/lib/avr/include/avr/wdt.h ****     void get_mcusr(void) \
+  76:/usr/lib/avr/include/avr/wdt.h ****       __attribute__((naked)) \
+  77:/usr/lib/avr/include/avr/wdt.h ****       __attribute__((section(".init3")));
+  78:/usr/lib/avr/include/avr/wdt.h ****     void get_mcusr(void)
+  79:/usr/lib/avr/include/avr/wdt.h ****     {
+  80:/usr/lib/avr/include/avr/wdt.h ****       mcusr_mirror = MCUSR;
+  81:/usr/lib/avr/include/avr/wdt.h ****       MCUSR = 0;
+  82:/usr/lib/avr/include/avr/wdt.h ****       wdt_disable();
+  83:/usr/lib/avr/include/avr/wdt.h ****     }
+  84:/usr/lib/avr/include/avr/wdt.h ****     \endcode
+  85:/usr/lib/avr/include/avr/wdt.h **** 
+  86:/usr/lib/avr/include/avr/wdt.h ****     Saving the value of MCUSR in \c mcusr_mirror is only needed if the
+  87:/usr/lib/avr/include/avr/wdt.h ****     application later wants to examine the reset source, but in particular, 
+  88:/usr/lib/avr/include/avr/wdt.h ****     clearing the watchdog reset flag before disabling the
+  89:/usr/lib/avr/include/avr/wdt.h ****     watchdog is required, according to the datasheet.
+  90:/usr/lib/avr/include/avr/wdt.h **** */
+  91:/usr/lib/avr/include/avr/wdt.h **** 
+  92:/usr/lib/avr/include/avr/wdt.h **** /**
+  93:/usr/lib/avr/include/avr/wdt.h ****    \ingroup avr_watchdog
+  94:/usr/lib/avr/include/avr/wdt.h ****    Reset the watchdog timer.  When the watchdog timer is enabled,
+  95:/usr/lib/avr/include/avr/wdt.h ****    a call to this instruction is required before the timer expires,
+  96:/usr/lib/avr/include/avr/wdt.h ****    otherwise a watchdog-initiated device reset will occur. 
+  97:/usr/lib/avr/include/avr/wdt.h **** */
+  98:/usr/lib/avr/include/avr/wdt.h **** 
+  99:/usr/lib/avr/include/avr/wdt.h **** #define wdt_reset() __asm__ __volatile__ ("wdr")
+ 100:/usr/lib/avr/include/avr/wdt.h **** 
+ 101:/usr/lib/avr/include/avr/wdt.h **** #ifndef __DOXYGEN__
+ 102:/usr/lib/avr/include/avr/wdt.h **** 
+ 103:/usr/lib/avr/include/avr/wdt.h **** #if defined(WDP3)
+ 104:/usr/lib/avr/include/avr/wdt.h **** # define _WD_PS3_MASK       _BV(WDP3)
+ 105:/usr/lib/avr/include/avr/wdt.h **** #else
+ 106:/usr/lib/avr/include/avr/wdt.h **** # define _WD_PS3_MASK       0x00
+ 107:/usr/lib/avr/include/avr/wdt.h **** #endif
+ 108:/usr/lib/avr/include/avr/wdt.h **** 
+ 109:/usr/lib/avr/include/avr/wdt.h **** #if defined(WDTCSR)
+ 110:/usr/lib/avr/include/avr/wdt.h **** #  define _WD_CONTROL_REG     WDTCSR
+ 111:/usr/lib/avr/include/avr/wdt.h **** #elif defined(WDTCR)
+ 112:/usr/lib/avr/include/avr/wdt.h **** #  define _WD_CONTROL_REG     WDTCR
+ 113:/usr/lib/avr/include/avr/wdt.h **** #else
+ 114:/usr/lib/avr/include/avr/wdt.h **** #  define _WD_CONTROL_REG     WDT
+ 115:/usr/lib/avr/include/avr/wdt.h **** #endif
+ 116:/usr/lib/avr/include/avr/wdt.h **** 
+ 117:/usr/lib/avr/include/avr/wdt.h **** #if defined(WDTOE)
+ 118:/usr/lib/avr/include/avr/wdt.h **** #define _WD_CHANGE_BIT      WDTOE
+ 119:/usr/lib/avr/include/avr/wdt.h **** #else
+ 120:/usr/lib/avr/include/avr/wdt.h **** #define _WD_CHANGE_BIT      WDCE
+ 121:/usr/lib/avr/include/avr/wdt.h **** #endif
+ 122:/usr/lib/avr/include/avr/wdt.h **** 
+ 123:/usr/lib/avr/include/avr/wdt.h **** #endif	/* !__DOXYGEN__ */
+ 124:/usr/lib/avr/include/avr/wdt.h **** 
+ 125:/usr/lib/avr/include/avr/wdt.h **** 
+ 126:/usr/lib/avr/include/avr/wdt.h **** /**
+ 127:/usr/lib/avr/include/avr/wdt.h ****    \ingroup avr_watchdog
+ 128:/usr/lib/avr/include/avr/wdt.h ****    Enable the watchdog timer, configuring it for expiry after
+ 129:/usr/lib/avr/include/avr/wdt.h ****    \c timeout (which is a combination of the \c WDP0 through
+ 130:/usr/lib/avr/include/avr/wdt.h ****    \c WDP2 bits to write into the \c WDTCR register; For those devices 
+ 131:/usr/lib/avr/include/avr/wdt.h ****    that have a \c WDTCSR register, it uses the combination of the \c WDP0 
+ 132:/usr/lib/avr/include/avr/wdt.h ****    through \c WDP3 bits).
+ 133:/usr/lib/avr/include/avr/wdt.h **** 
+ 134:/usr/lib/avr/include/avr/wdt.h ****    See also the symbolic constants \c WDTO_15MS et al.
+ 135:/usr/lib/avr/include/avr/wdt.h **** */
+ 136:/usr/lib/avr/include/avr/wdt.h **** 
+ 137:/usr/lib/avr/include/avr/wdt.h **** 
+ 138:/usr/lib/avr/include/avr/wdt.h **** #if defined(__AVR_XMEGA__)
+ 139:/usr/lib/avr/include/avr/wdt.h **** 
+ 140:/usr/lib/avr/include/avr/wdt.h **** #if defined (WDT_CTRLA) && !defined(RAMPD)
+ 141:/usr/lib/avr/include/avr/wdt.h **** 
+ 142:/usr/lib/avr/include/avr/wdt.h **** #define wdt_enable(timeout) \
+ 143:/usr/lib/avr/include/avr/wdt.h **** do { \
+ 144:/usr/lib/avr/include/avr/wdt.h **** uint8_t temp; \
+ 145:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ ( \
+ 146:/usr/lib/avr/include/avr/wdt.h **** 	"wdr"									"\n\t" \
+ 147:/usr/lib/avr/include/avr/wdt.h **** 	"out %[ccp_reg], %[ioreg_cen_mask]"		"\n\t" \
+ 148:/usr/lib/avr/include/avr/wdt.h **** 	"lds %[tmp], %[wdt_reg]"				"\n\t" \
+ 149:/usr/lib/avr/include/avr/wdt.h **** 	"sbr %[tmp], %[wdt_enable_timeout]"		"\n\t" \
+ 150:/usr/lib/avr/include/avr/wdt.h **** 	"sts %[wdt_reg], %[tmp]"				"\n\t" \
+ 151:/usr/lib/avr/include/avr/wdt.h **** 	"1:lds %[tmp], %[wdt_status_reg]"		"\n\t" \
+ 152:/usr/lib/avr/include/avr/wdt.h **** 	"sbrc %[tmp], %[wdt_syncbusy_bit]"		"\n\t" \
+ 153:/usr/lib/avr/include/avr/wdt.h **** 	"rjmp 1b"								"\n\t" \
+ 154:/usr/lib/avr/include/avr/wdt.h **** 	: [tmp]					"=r" (temp) \
+ 155:/usr/lib/avr/include/avr/wdt.h **** 	: [ccp_reg]				"I"  (_SFR_IO_ADDR(CCP)), \
+ 156:/usr/lib/avr/include/avr/wdt.h **** 	  [ioreg_cen_mask]		"r"  ((uint8_t)CCP_IOREG_gc), \
+ 157:/usr/lib/avr/include/avr/wdt.h **** 	  [wdt_reg]				"n"  (_SFR_MEM_ADDR(WDT_CTRLA)), \
+ 158:/usr/lib/avr/include/avr/wdt.h **** 	  [wdt_enable_timeout]	"M"  (timeout), \
+ 159:/usr/lib/avr/include/avr/wdt.h **** 	  [wdt_status_reg]		"n"  (_SFR_MEM_ADDR(WDT_STATUS)), \
+ 160:/usr/lib/avr/include/avr/wdt.h **** 	  [wdt_syncbusy_bit]	"I"  (WDT_SYNCBUSY_bm) \
+ 161:/usr/lib/avr/include/avr/wdt.h **** ); \
+ 162:/usr/lib/avr/include/avr/wdt.h **** } while(0)
+ 163:/usr/lib/avr/include/avr/wdt.h **** 
+ 164:/usr/lib/avr/include/avr/wdt.h **** #define wdt_disable() \
+ 165:/usr/lib/avr/include/avr/wdt.h **** do { \
+ 166:/usr/lib/avr/include/avr/wdt.h **** uint8_t temp; \
+ 167:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ (  \
+ 168:/usr/lib/avr/include/avr/wdt.h **** 	"wdr"								"\n\t" \
+ 169:/usr/lib/avr/include/avr/wdt.h **** 	"out %[ccp_reg], %[ioreg_cen_mask]" "\n\t" \
+ 170:/usr/lib/avr/include/avr/wdt.h **** 	"lds %[tmp], %[wdt_reg]"			"\n\t" \
+ 171:/usr/lib/avr/include/avr/wdt.h **** 	"cbr %[tmp], %[timeout_mask]"       "\n\t" \
+ 172:/usr/lib/avr/include/avr/wdt.h **** 	"sts %[wdt_reg], %[tmp]"			"\n\t" \
+ 173:/usr/lib/avr/include/avr/wdt.h ****     : [tmp]            "=r" (temp) \
+ 174:/usr/lib/avr/include/avr/wdt.h ****     : [ccp_reg]        "I" (_SFR_IO_ADDR(CCP)),       \
+ 175:/usr/lib/avr/include/avr/wdt.h ****       [ioreg_cen_mask] "r" ((uint8_t)CCP_IOREG_gc),   \
+ 176:/usr/lib/avr/include/avr/wdt.h ****       [wdt_reg]        "n" (_SFR_MEM_ADDR(WDT_CTRLA)),\
+ 177:/usr/lib/avr/include/avr/wdt.h ****       [timeout_mask]   "I" (WDT_PERIOD_gm) \
+ 178:/usr/lib/avr/include/avr/wdt.h **** ); \
+ 179:/usr/lib/avr/include/avr/wdt.h **** } while(0)
+ 180:/usr/lib/avr/include/avr/wdt.h **** 
+ 181:/usr/lib/avr/include/avr/wdt.h **** #else // defined (WDT_CTRLA) && !defined(RAMPD)
+ 182:/usr/lib/avr/include/avr/wdt.h **** 
+ 183:/usr/lib/avr/include/avr/wdt.h **** /*
+ 184:/usr/lib/avr/include/avr/wdt.h ****    wdt_enable(timeout) for xmega devices
+ 185:/usr/lib/avr/include/avr/wdt.h **** ** write signature (CCP_IOREG_gc) that enables change of protected I/O
+ 186:/usr/lib/avr/include/avr/wdt.h ****    registers to the CCP register
+ 187:/usr/lib/avr/include/avr/wdt.h **** ** At the same time,
+ 188:/usr/lib/avr/include/avr/wdt.h ****    1) set WDT change enable (WDT_CEN_bm)
+ 189:/usr/lib/avr/include/avr/wdt.h ****    2) enable WDT (WDT_ENABLE_bm)
+ 190:/usr/lib/avr/include/avr/wdt.h ****    3) set timeout (timeout)
+ 191:/usr/lib/avr/include/avr/wdt.h **** ** Synchronization starts when ENABLE bit of WDT is set. So, wait till it
+ 192:/usr/lib/avr/include/avr/wdt.h ****    finishes (SYNCBUSY of STATUS register is automatically cleared after the
+ 193:/usr/lib/avr/include/avr/wdt.h ****    sync is finished).
+ 194:/usr/lib/avr/include/avr/wdt.h **** */
+ 195:/usr/lib/avr/include/avr/wdt.h **** #define wdt_enable(timeout) \
+ 196:/usr/lib/avr/include/avr/wdt.h **** do { \
+ 197:/usr/lib/avr/include/avr/wdt.h **** uint8_t temp; \
+ 198:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ (         \
+ 199:/usr/lib/avr/include/avr/wdt.h ****     "in __tmp_reg__, %[rampd]"              "\n\t" \
+ 200:/usr/lib/avr/include/avr/wdt.h ****     "out %[rampd], __zero_reg__"            "\n\t" \
+ 201:/usr/lib/avr/include/avr/wdt.h ****     "out %[ccp_reg], %[ioreg_cen_mask]"     "\n\t" \
+ 202:/usr/lib/avr/include/avr/wdt.h ****     "sts %[wdt_reg], %[wdt_enable_timeout]" "\n\t" \
+ 203:/usr/lib/avr/include/avr/wdt.h ****     "1:lds %[tmp], %[wdt_status_reg]"       "\n\t" \
+ 204:/usr/lib/avr/include/avr/wdt.h ****     "sbrc %[tmp], %[wdt_syncbusy_bit]"      "\n\t" \
+ 205:/usr/lib/avr/include/avr/wdt.h ****     "rjmp 1b"                               "\n\t" \
+ 206:/usr/lib/avr/include/avr/wdt.h ****     "out %[rampd], __tmp_reg__"             "\n\t" \
+ 207:/usr/lib/avr/include/avr/wdt.h ****     : [tmp]                "=r" (temp) \
+ 208:/usr/lib/avr/include/avr/wdt.h ****     : [rampd]              "I" (_SFR_IO_ADDR(RAMPD)),      \
+ 209:/usr/lib/avr/include/avr/wdt.h ****       [ccp_reg]            "I" (_SFR_IO_ADDR(CCP)),        \
+ 210:/usr/lib/avr/include/avr/wdt.h ****       [ioreg_cen_mask]     "r" ((uint8_t)CCP_IOREG_gc),     \
+ 211:/usr/lib/avr/include/avr/wdt.h ****       [wdt_reg]            "n" (_SFR_MEM_ADDR(WDT_CTRL)),   \
+ 212:/usr/lib/avr/include/avr/wdt.h ****       [wdt_enable_timeout] "r" ((uint8_t)(WDT_CEN_bm | WDT_ENABLE_bm | timeout)), \
+ 213:/usr/lib/avr/include/avr/wdt.h ****       [wdt_status_reg]     "n" (_SFR_MEM_ADDR(WDT_STATUS)), \
+ 214:/usr/lib/avr/include/avr/wdt.h ****       [wdt_syncbusy_bit]   "I" (WDT_SYNCBUSY_bm)            \
+ 215:/usr/lib/avr/include/avr/wdt.h ****     : "r0" \
+ 216:/usr/lib/avr/include/avr/wdt.h **** ); \
+ 217:/usr/lib/avr/include/avr/wdt.h **** } while(0)
+ 218:/usr/lib/avr/include/avr/wdt.h **** 
+ 219:/usr/lib/avr/include/avr/wdt.h **** #define wdt_disable() \
+ 220:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ (  \
+ 221:/usr/lib/avr/include/avr/wdt.h ****     "in __tmp_reg__, %[rampd]"          "\n\t" \
+ 222:/usr/lib/avr/include/avr/wdt.h ****     "out %[rampd], __zero_reg__"        "\n\t" \
+ 223:/usr/lib/avr/include/avr/wdt.h ****     "out %[ccp_reg], %[ioreg_cen_mask]" "\n\t" \
+ 224:/usr/lib/avr/include/avr/wdt.h ****     "sts %[wdt_reg], %[disable_mask]"   "\n\t" \
+ 225:/usr/lib/avr/include/avr/wdt.h ****     "out %[rampd], __tmp_reg__"         "\n\t" \
+ 226:/usr/lib/avr/include/avr/wdt.h ****     : \
+ 227:/usr/lib/avr/include/avr/wdt.h ****     : [rampd]             "I" (_SFR_IO_ADDR(RAMPD)),    \
+ 228:/usr/lib/avr/include/avr/wdt.h ****       [ccp_reg]           "I" (_SFR_IO_ADDR(CCP)),      \
+ 229:/usr/lib/avr/include/avr/wdt.h ****       [ioreg_cen_mask]    "r" ((uint8_t)CCP_IOREG_gc),   \
+ 230:/usr/lib/avr/include/avr/wdt.h ****       [wdt_reg]           "n" (_SFR_MEM_ADDR(WDT_CTRL)), \
+ 231:/usr/lib/avr/include/avr/wdt.h ****       [disable_mask]      "r" ((uint8_t)((~WDT_ENABLE_bm) | WDT_CEN_bm)) \
+ 232:/usr/lib/avr/include/avr/wdt.h ****     : "r0" \
+ 233:/usr/lib/avr/include/avr/wdt.h **** );
+ 234:/usr/lib/avr/include/avr/wdt.h **** 
+ 235:/usr/lib/avr/include/avr/wdt.h **** #endif // defined (WDT_CTRLA) && !defined(RAMPD)
+ 236:/usr/lib/avr/include/avr/wdt.h **** 
+ 237:/usr/lib/avr/include/avr/wdt.h **** #elif defined(__AVR_TINY__)
+ 238:/usr/lib/avr/include/avr/wdt.h **** 
+ 239:/usr/lib/avr/include/avr/wdt.h **** #define wdt_enable(value) \
+ 240:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ ( \
+ 241:/usr/lib/avr/include/avr/wdt.h ****     "in __tmp_reg__,__SREG__" "\n\t"  \
+ 242:/usr/lib/avr/include/avr/wdt.h ****     "cli" "\n\t"  \
+ 243:/usr/lib/avr/include/avr/wdt.h ****     "wdr" "\n\t"  \
+ 244:/usr/lib/avr/include/avr/wdt.h ****     "out %[CCPADDRESS],%[SIGNATURE]" "\n\t"  \
+ 245:/usr/lib/avr/include/avr/wdt.h ****     "out %[WDTREG],%[WDVALUE]" "\n\t"  \
+ 246:/usr/lib/avr/include/avr/wdt.h ****     "out __SREG__,__tmp_reg__" "\n\t"  \
+ 247:/usr/lib/avr/include/avr/wdt.h ****     : /* no outputs */  \
+ 248:/usr/lib/avr/include/avr/wdt.h ****     : [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)),  \
+ 249:/usr/lib/avr/include/avr/wdt.h ****       [SIGNATURE] "r" ((uint8_t)0xD8), \
+ 250:/usr/lib/avr/include/avr/wdt.h ****       [WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)), \
+ 251:/usr/lib/avr/include/avr/wdt.h ****       [WDVALUE] "r" ((uint8_t)((value & 0x08 ? _WD_PS3_MASK : 0x00) \
+ 252:/usr/lib/avr/include/avr/wdt.h ****       | _BV(WDE) | (value & 0x07) )) \
+ 253:/usr/lib/avr/include/avr/wdt.h ****     : "r16" \
+ 254:/usr/lib/avr/include/avr/wdt.h **** )
+ 255:/usr/lib/avr/include/avr/wdt.h **** 
+ 256:/usr/lib/avr/include/avr/wdt.h **** #define wdt_disable() \
+ 257:/usr/lib/avr/include/avr/wdt.h **** do { \
+ 258:/usr/lib/avr/include/avr/wdt.h **** uint8_t temp_wd; \
+ 259:/usr/lib/avr/include/avr/wdt.h **** __asm__ __volatile__ ( \
+ 260:/usr/lib/avr/include/avr/wdt.h ****     "in __tmp_reg__,__SREG__" "\n\t"  \
+ 261:/usr/lib/avr/include/avr/wdt.h ****     "cli" "\n\t"  \
+ 262:/usr/lib/avr/include/avr/wdt.h ****     "wdr" "\n\t"  \
+ 263:/usr/lib/avr/include/avr/wdt.h ****     "out %[CCPADDRESS],%[SIGNATURE]" "\n\t"  \
+ 264:/usr/lib/avr/include/avr/wdt.h ****     "in  %[TEMP_WD],%[WDTREG]" "\n\t" \
+ 265:/usr/lib/avr/include/avr/wdt.h ****     "cbr %[TEMP_WD],%[WDVALUE]" "\n\t" \
+ 266:/usr/lib/avr/include/avr/wdt.h ****     "out %[WDTREG],%[TEMP_WD]" "\n\t" \
+ 267:/usr/lib/avr/include/avr/wdt.h ****     "out __SREG__,__tmp_reg__" "\n\t" \
+ 268:/usr/lib/avr/include/avr/wdt.h ****     : /*no output */ \
+ 269:/usr/lib/avr/include/avr/wdt.h ****     : [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)), \
+ 270:/usr/lib/avr/include/avr/wdt.h ****       [SIGNATURE] "r" ((uint8_t)0xD8), \
+ 271:/usr/lib/avr/include/avr/wdt.h ****       [WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)), \
+ 272:/usr/lib/avr/include/avr/wdt.h ****       [TEMP_WD] "d" (temp_wd), \
+ 273:/usr/lib/avr/include/avr/wdt.h ****       [WDVALUE] "n" (1 << WDE) \
+ 274:/usr/lib/avr/include/avr/wdt.h ****     : "r16" \
+ 275:/usr/lib/avr/include/avr/wdt.h **** ); \
+ 276:/usr/lib/avr/include/avr/wdt.h **** }while(0)
+ 277:/usr/lib/avr/include/avr/wdt.h **** 
+ 278:/usr/lib/avr/include/avr/wdt.h **** #elif defined(CCP)
+ 279:/usr/lib/avr/include/avr/wdt.h **** 
+ 280:/usr/lib/avr/include/avr/wdt.h **** static __inline__
+ 281:/usr/lib/avr/include/avr/wdt.h **** __attribute__ ((__always_inline__))
+ 282:/usr/lib/avr/include/avr/wdt.h **** void wdt_enable (const uint8_t value)
+ 283:/usr/lib/avr/include/avr/wdt.h **** {
+ 284:/usr/lib/avr/include/avr/wdt.h **** 	if (!_SFR_IO_REG_P (CCP) && !_SFR_IO_REG_P (_WD_CONTROL_REG))
+ 285:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 286:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
+ 287:/usr/lib/avr/include/avr/wdt.h **** 			"in __tmp_reg__,__SREG__" "\n\t"
+ 288:/usr/lib/avr/include/avr/wdt.h **** 			"cli" "\n\t"
+ 289:/usr/lib/avr/include/avr/wdt.h **** 			"wdr" "\n\t"
+ 290:/usr/lib/avr/include/avr/wdt.h **** 			"sts %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 291:/usr/lib/avr/include/avr/wdt.h **** 			"sts %[WDTREG],%[WDVALUE]" "\n\t"
+ 292:/usr/lib/avr/include/avr/wdt.h **** 			"out __SREG__,__tmp_reg__" "\n\t"
+ 293:/usr/lib/avr/include/avr/wdt.h **** 			: /* no outputs */
+ 294:/usr/lib/avr/include/avr/wdt.h **** 			: [CCPADDRESS] "n" (_SFR_MEM_ADDR(CCP)),
+ 295:/usr/lib/avr/include/avr/wdt.h **** 			[SIGNATURE] "r" ((uint8_t)0xD8),
+ 296:/usr/lib/avr/include/avr/wdt.h **** 			[WDTREG] "n" (_SFR_MEM_ADDR(_WD_CONTROL_REG)),
+ 297:/usr/lib/avr/include/avr/wdt.h **** 			[WDVALUE] "r" ((uint8_t)((value & 0x08 ? _WD_PS3_MASK : 0x00)
+ 298:/usr/lib/avr/include/avr/wdt.h **** 				| _BV(WDE) | (value & 0x07) ))
+ 299:/usr/lib/avr/include/avr/wdt.h **** 			: "r0"
+ 300:/usr/lib/avr/include/avr/wdt.h **** 			);
+ 301:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 302:/usr/lib/avr/include/avr/wdt.h **** 	else if (!_SFR_IO_REG_P (CCP) && _SFR_IO_REG_P (_WD_CONTROL_REG))
+ 303:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 304:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
+ 305:/usr/lib/avr/include/avr/wdt.h **** 			"in __tmp_reg__,__SREG__" "\n\t"
+ 306:/usr/lib/avr/include/avr/wdt.h **** 			"cli" "\n\t"
+ 307:/usr/lib/avr/include/avr/wdt.h **** 			"wdr" "\n\t"
+ 308:/usr/lib/avr/include/avr/wdt.h **** 			"sts %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 309:/usr/lib/avr/include/avr/wdt.h **** 			"out %[WDTREG],%[WDVALUE]" "\n\t"
+ 310:/usr/lib/avr/include/avr/wdt.h **** 			"out __SREG__,__tmp_reg__" "\n\t"
+ 311:/usr/lib/avr/include/avr/wdt.h **** 			: /* no outputs */
+ 312:/usr/lib/avr/include/avr/wdt.h **** 			: [CCPADDRESS] "n" (_SFR_MEM_ADDR(CCP)),
+ 313:/usr/lib/avr/include/avr/wdt.h **** 			[SIGNATURE] "r" ((uint8_t)0xD8),
+ 314:/usr/lib/avr/include/avr/wdt.h **** 			[WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)),
+ 315:/usr/lib/avr/include/avr/wdt.h **** 			[WDVALUE] "r" ((uint8_t)((value & 0x08 ? _WD_PS3_MASK : 0x00)
+ 316:/usr/lib/avr/include/avr/wdt.h **** 				| _BV(WDE) | (value & 0x07) ))
+ 317:/usr/lib/avr/include/avr/wdt.h **** 			: "r0"
+ 318:/usr/lib/avr/include/avr/wdt.h **** 			);
+ 319:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 320:/usr/lib/avr/include/avr/wdt.h **** 	else if (_SFR_IO_REG_P (CCP) && !_SFR_IO_REG_P (_WD_CONTROL_REG))
+ 321:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 322:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
+ 323:/usr/lib/avr/include/avr/wdt.h **** 			"in __tmp_reg__,__SREG__" "\n\t"
+ 324:/usr/lib/avr/include/avr/wdt.h **** 			"cli" "\n\t"
+ 325:/usr/lib/avr/include/avr/wdt.h **** 			"wdr" "\n\t"
+ 326:/usr/lib/avr/include/avr/wdt.h **** 			"out %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 327:/usr/lib/avr/include/avr/wdt.h **** 			"sts %[WDTREG],%[WDVALUE]" "\n\t"
+ 328:/usr/lib/avr/include/avr/wdt.h **** 			"out __SREG__,__tmp_reg__" "\n\t"
+ 329:/usr/lib/avr/include/avr/wdt.h **** 			: /* no outputs */
+ 330:/usr/lib/avr/include/avr/wdt.h **** 			: [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)),
+ 331:/usr/lib/avr/include/avr/wdt.h **** 			[SIGNATURE] "r" ((uint8_t)0xD8),
+ 332:/usr/lib/avr/include/avr/wdt.h **** 			[WDTREG] "n" (_SFR_MEM_ADDR(_WD_CONTROL_REG)),
+ 333:/usr/lib/avr/include/avr/wdt.h **** 			[WDVALUE] "r" ((uint8_t)((value & 0x08 ? _WD_PS3_MASK : 0x00)
+ 334:/usr/lib/avr/include/avr/wdt.h **** 				| _BV(WDE) | (value & 0x07) ))
+ 335:/usr/lib/avr/include/avr/wdt.h **** 			: "r0"
+ 336:/usr/lib/avr/include/avr/wdt.h **** 			);
+ 337:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 338:/usr/lib/avr/include/avr/wdt.h **** 	else
+ 339:/usr/lib/avr/include/avr/wdt.h ****  	{
+ 340:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
+ 341:/usr/lib/avr/include/avr/wdt.h **** 			"in __tmp_reg__,__SREG__" "\n\t"
+ 342:/usr/lib/avr/include/avr/wdt.h **** 			"cli" "\n\t"
+ 343:/usr/lib/avr/include/avr/wdt.h **** 			"wdr" "\n\t"
+ 344:/usr/lib/avr/include/avr/wdt.h **** 			"out %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 345:/usr/lib/avr/include/avr/wdt.h **** 			"out %[WDTREG],%[WDVALUE]" "\n\t"
+ 346:/usr/lib/avr/include/avr/wdt.h **** 			"out __SREG__,__tmp_reg__" "\n\t"
+ 347:/usr/lib/avr/include/avr/wdt.h **** 			: /* no outputs */
+ 348:/usr/lib/avr/include/avr/wdt.h **** 			: [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)),
+ 349:/usr/lib/avr/include/avr/wdt.h **** 			[SIGNATURE] "r" ((uint8_t)0xD8),
+ 350:/usr/lib/avr/include/avr/wdt.h **** 			[WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)),
+ 351:/usr/lib/avr/include/avr/wdt.h **** 			[WDVALUE] "r" ((uint8_t)((value & 0x08 ? _WD_PS3_MASK : 0x00)
+ 352:/usr/lib/avr/include/avr/wdt.h **** 				| _BV(WDE) | (value & 0x07) ))
+ 353:/usr/lib/avr/include/avr/wdt.h **** 			: "r0"
+ 354:/usr/lib/avr/include/avr/wdt.h **** 			);
+ 355:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 356:/usr/lib/avr/include/avr/wdt.h **** }
+ 357:/usr/lib/avr/include/avr/wdt.h **** 
+ 358:/usr/lib/avr/include/avr/wdt.h **** static __inline__
+ 359:/usr/lib/avr/include/avr/wdt.h **** __attribute__ ((__always_inline__))
+ 360:/usr/lib/avr/include/avr/wdt.h **** void wdt_disable (void)
+ 361:/usr/lib/avr/include/avr/wdt.h **** {
+ 362:/usr/lib/avr/include/avr/wdt.h **** 	if (!_SFR_IO_REG_P (CCP) && !_SFR_IO_REG_P(_WD_CONTROL_REG))
+ 363:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 364:/usr/lib/avr/include/avr/wdt.h ****         uint8_t temp_wd;
+ 365:/usr/lib/avr/include/avr/wdt.h ****         __asm__ __volatile__ (
+ 366:/usr/lib/avr/include/avr/wdt.h **** 				"in __tmp_reg__,__SREG__" "\n\t"
+ 367:/usr/lib/avr/include/avr/wdt.h **** 				"cli" "\n\t"
+ 368:/usr/lib/avr/include/avr/wdt.h **** 				"wdr" "\n\t"
+ 369:/usr/lib/avr/include/avr/wdt.h **** 				"sts %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 370:/usr/lib/avr/include/avr/wdt.h **** 				"lds %[TEMP_WD],%[WDTREG]" "\n\t"
+ 371:/usr/lib/avr/include/avr/wdt.h **** 				"cbr %[TEMP_WD],%[WDVALUE]" "\n\t"
+ 372:/usr/lib/avr/include/avr/wdt.h **** 				"sts %[WDTREG],%[TEMP_WD]" "\n\t"
+ 373:/usr/lib/avr/include/avr/wdt.h **** 				"out __SREG__,__tmp_reg__" "\n\t"
+ 374:/usr/lib/avr/include/avr/wdt.h **** 				: /*no output */
+ 375:/usr/lib/avr/include/avr/wdt.h **** 				: [CCPADDRESS] "n" (_SFR_MEM_ADDR(CCP)),
+ 376:/usr/lib/avr/include/avr/wdt.h **** 				[SIGNATURE] "r" ((uint8_t)0xD8),
+ 377:/usr/lib/avr/include/avr/wdt.h **** 				[WDTREG] "n" (_SFR_MEM_ADDR(_WD_CONTROL_REG)),
+ 378:/usr/lib/avr/include/avr/wdt.h **** 				[TEMP_WD] "d" (temp_wd),
+ 379:/usr/lib/avr/include/avr/wdt.h **** 				[WDVALUE] "n" (1 << WDE)
+ 380:/usr/lib/avr/include/avr/wdt.h **** 				: "r0"
+ 381:/usr/lib/avr/include/avr/wdt.h **** 				);
+ 382:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 383:/usr/lib/avr/include/avr/wdt.h **** 	else if (!_SFR_IO_REG_P (CCP) && _SFR_IO_REG_P(_WD_CONTROL_REG))
+ 384:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 385:/usr/lib/avr/include/avr/wdt.h ****         uint8_t temp_wd;
+ 386:/usr/lib/avr/include/avr/wdt.h ****         __asm__ __volatile__ (
+ 387:/usr/lib/avr/include/avr/wdt.h **** 				"in __tmp_reg__,__SREG__" "\n\t"
+ 388:/usr/lib/avr/include/avr/wdt.h **** 				"cli" "\n\t"
+ 389:/usr/lib/avr/include/avr/wdt.h **** 				"wdr" "\n\t"
+ 390:/usr/lib/avr/include/avr/wdt.h **** 				"sts %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 391:/usr/lib/avr/include/avr/wdt.h **** 				"in %[TEMP_WD],%[WDTREG]" "\n\t"
+ 392:/usr/lib/avr/include/avr/wdt.h **** 				"cbr %[TEMP_WD],%[WDVALUE]" "\n\t"
+ 393:/usr/lib/avr/include/avr/wdt.h **** 				"out %[WDTREG],%[TEMP_WD]" "\n\t"
+ 394:/usr/lib/avr/include/avr/wdt.h **** 				"out __SREG__,__tmp_reg__" "\n\t"
+ 395:/usr/lib/avr/include/avr/wdt.h **** 				: /*no output */
+ 396:/usr/lib/avr/include/avr/wdt.h **** 				: [CCPADDRESS] "n" (_SFR_MEM_ADDR(CCP)),
+ 397:/usr/lib/avr/include/avr/wdt.h **** 				[SIGNATURE] "r" ((uint8_t)0xD8),
+ 398:/usr/lib/avr/include/avr/wdt.h **** 				[WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)),
+ 399:/usr/lib/avr/include/avr/wdt.h **** 				[TEMP_WD] "d" (temp_wd),
+ 400:/usr/lib/avr/include/avr/wdt.h **** 				[WDVALUE] "n" (1 << WDE)
+ 401:/usr/lib/avr/include/avr/wdt.h **** 				: "r0"
+ 402:/usr/lib/avr/include/avr/wdt.h **** 				);
+ 403:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 404:/usr/lib/avr/include/avr/wdt.h **** 	else if (_SFR_IO_REG_P (CCP) && !_SFR_IO_REG_P(_WD_CONTROL_REG))
+ 405:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 406:/usr/lib/avr/include/avr/wdt.h ****         uint8_t temp_wd;
+ 407:/usr/lib/avr/include/avr/wdt.h ****         __asm__ __volatile__ (
+ 408:/usr/lib/avr/include/avr/wdt.h **** 				"in __tmp_reg__,__SREG__" "\n\t"
+ 409:/usr/lib/avr/include/avr/wdt.h **** 				"cli" "\n\t"
+ 410:/usr/lib/avr/include/avr/wdt.h **** 				"wdr" "\n\t"
+ 411:/usr/lib/avr/include/avr/wdt.h **** 				"out %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 412:/usr/lib/avr/include/avr/wdt.h **** 				"lds %[TEMP_WD],%[WDTREG]" "\n\t"
+ 413:/usr/lib/avr/include/avr/wdt.h **** 				"cbr %[TEMP_WD],%[WDVALUE]" "\n\t"
+ 414:/usr/lib/avr/include/avr/wdt.h **** 				"sts %[WDTREG],%[TEMP_WD]" "\n\t"
+ 415:/usr/lib/avr/include/avr/wdt.h **** 				"out __SREG__,__tmp_reg__" "\n\t"
+ 416:/usr/lib/avr/include/avr/wdt.h **** 				: /*no output */
+ 417:/usr/lib/avr/include/avr/wdt.h **** 				: [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)),
+ 418:/usr/lib/avr/include/avr/wdt.h **** 				[SIGNATURE] "r" ((uint8_t)0xD8),
+ 419:/usr/lib/avr/include/avr/wdt.h **** 				[WDTREG] "n" (_SFR_MEM_ADDR(_WD_CONTROL_REG)),
+ 420:/usr/lib/avr/include/avr/wdt.h **** 				[TEMP_WD] "d" (temp_wd),
+ 421:/usr/lib/avr/include/avr/wdt.h **** 				[WDVALUE] "n" (1 << WDE)
+ 422:/usr/lib/avr/include/avr/wdt.h **** 				: "r0"
+ 423:/usr/lib/avr/include/avr/wdt.h **** 				);
+ 424:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 425:/usr/lib/avr/include/avr/wdt.h **** 	else
+ 426:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 427:/usr/lib/avr/include/avr/wdt.h ****         uint8_t temp_wd;
+ 428:/usr/lib/avr/include/avr/wdt.h ****         __asm__ __volatile__ (
+ 429:/usr/lib/avr/include/avr/wdt.h **** 				"in __tmp_reg__,__SREG__" "\n\t"
+ 430:/usr/lib/avr/include/avr/wdt.h **** 				"cli" "\n\t"
+ 431:/usr/lib/avr/include/avr/wdt.h **** 				"wdr" "\n\t"
+ 432:/usr/lib/avr/include/avr/wdt.h **** 				"out %[CCPADDRESS],%[SIGNATURE]" "\n\t"
+ 433:/usr/lib/avr/include/avr/wdt.h **** 				"in %[TEMP_WD],%[WDTREG]" "\n\t"
+ 434:/usr/lib/avr/include/avr/wdt.h **** 				"cbr %[TEMP_WD],%[WDVALUE]" "\n\t"
+ 435:/usr/lib/avr/include/avr/wdt.h **** 				"out %[WDTREG],%[TEMP_WD]" "\n\t"
+ 436:/usr/lib/avr/include/avr/wdt.h **** 				"out __SREG__,__tmp_reg__" "\n\t"
+ 437:/usr/lib/avr/include/avr/wdt.h **** 				: /*no output */
+ 438:/usr/lib/avr/include/avr/wdt.h **** 				: [CCPADDRESS] "I" (_SFR_IO_ADDR(CCP)),
+ 439:/usr/lib/avr/include/avr/wdt.h **** 				[SIGNATURE] "r" ((uint8_t)0xD8),
+ 440:/usr/lib/avr/include/avr/wdt.h **** 				[WDTREG] "I" (_SFR_IO_ADDR(_WD_CONTROL_REG)),
+ 441:/usr/lib/avr/include/avr/wdt.h **** 				[TEMP_WD] "d" (temp_wd),
+ 442:/usr/lib/avr/include/avr/wdt.h **** 				[WDVALUE] "n" (1 << WDE)
+ 443:/usr/lib/avr/include/avr/wdt.h **** 				: "r0"
+ 444:/usr/lib/avr/include/avr/wdt.h **** 				);
+ 445:/usr/lib/avr/include/avr/wdt.h **** 	}
+ 446:/usr/lib/avr/include/avr/wdt.h **** }
+ 447:/usr/lib/avr/include/avr/wdt.h **** 
+ 448:/usr/lib/avr/include/avr/wdt.h **** #else
+ 449:/usr/lib/avr/include/avr/wdt.h **** 
+ 450:/usr/lib/avr/include/avr/wdt.h **** static __inline__
+ 451:/usr/lib/avr/include/avr/wdt.h **** __attribute__ ((__always_inline__))
+ 452:/usr/lib/avr/include/avr/wdt.h **** void wdt_enable (const uint8_t value)
+ 453:/usr/lib/avr/include/avr/wdt.h **** {
+ 454:/usr/lib/avr/include/avr/wdt.h **** 	if (_SFR_IO_REG_P (_WD_CONTROL_REG))
+ 455:/usr/lib/avr/include/avr/wdt.h **** 	{
+ 456:/usr/lib/avr/include/avr/wdt.h **** 		__asm__ __volatile__ (
+ 1008               		.loc 2 456 0
+ 1009 0008 9FE0      		ldi r25,lo8(15)
+ 1010 000a 88E1      		ldi r24,lo8(24)
+ 1011               	/* #APP */
+ 1012               	 ;  456 "/usr/lib/avr/include/avr/wdt.h" 1
+ 1013 000c 0FB6      		in __tmp_reg__,__SREG__
+ 1014 000e F894      		cli
+ 1015 0010 A895      		wdr
+ 1016 0012 81BD      		out 33, r24
+ 1017 0014 0FBE      		out __SREG__,__tmp_reg__
+ 1018 0016 91BD      		out 33, r25
+ 1019               	 	
+ 1020               	 ;  0 "" 2
+ 1021               	.LVL90:
+ 1022               	/* #NOAPP */
+ 1023               	.LBE33:
+ 1024               	.LBE32:
+ 211:main.c        ****     wdt_enable(WDTO_2S);
+ 212:main.c        ****     wdt_reset();
+ 1025               		.loc 1 212 0
+ 1026               	/* #APP */
+ 1027               	 ;  212 "main.c" 1
+ 1028 0018 A895      		wdr
+ 1029               	 ;  0 "" 2
+ 213:main.c        **** 
+ 214:main.c        ****     setup_pins();
+ 1030               		.loc 1 214 0
+ 1031               	/* #NOAPP */
+ 1032 001a 00D0      		rcall setup_pins
+ 1033               	.LVL91:
+ 215:main.c        **** 
+ 216:main.c        ****     myread_eeprom();
+ 1034               		.loc 1 216 0
+ 1035 001c 00D0      		rcall myread_eeprom
+ 1036               	.LVL92:
+ 217:main.c        ****     ADC_Init();
+ 1037               		.loc 1 217 0
+ 1038 001e 00D0      		rcall ADC_Init
+ 1039               	.LVL93:
+ 218:main.c        ****     USART_Init();
+ 1040               		.loc 1 218 0
+ 1041 0020 00D0      		rcall USART_Init
+ 1042               	.LVL94:
+ 219:main.c        **** 
+ 220:main.c        **** //timer init
+ 221:main.c        ****     TCCR1A = 0;         //Т/С1 отсоединен от вывода ОС1, режим ШИМ о
+ 1043               		.loc 1 221 0
+ 1044 0022 1FBC      		out 0x2f,__zero_reg__
+ 222:main.c        ****     TCCR1B = 4;         //Коэффициент деления частоты системной �
+ 1045               		.loc 1 222 0
+ 1046 0024 84E0      		ldi r24,lo8(4)
+ 1047 0026 8EBD      		out 0x2e,r24
+ 223:main.c        ****     TCNT1 = 0x10000 - (F_CPU / 512); //Инициализируем счетный регистр
+ 1048               		.loc 1 223 0
+ 1049 0028 2CE7      		ldi r18,lo8(124)
+ 1050 002a 31EE      		ldi r19,lo8(-31)
+ 1051 002c 3DBD      		out 0x2c+1,r19
+ 1052 002e 2CBD      		out 0x2c,r18
+ 224:main.c        **** 
+ 225:main.c        ****     TIFR = 0;       //Сбрасываем все флаги прерываний от Т/С1
+ 1053               		.loc 1 225 0
+ 1054 0030 18BE      		out 0x38,__zero_reg__
+ 226:main.c        ****     TIMSK = 1 << TOIE1;        //Разрешаем прерывание при переполне�
+ 1055               		.loc 1 226 0
+ 1056 0032 89BF      		out 0x39,r24
+ 227:main.c        **** 
+ 228:main.c        ****     sei();
+ 1057               		.loc 1 228 0
+ 1058               	/* #APP */
+ 1059               	 ;  228 "main.c" 1
+ 1060 0034 7894      		sei
+ 1061               	 ;  0 "" 2
+ 229:main.c        ****     wdt_reset();
+ 1062               		.loc 1 229 0
+ 1063               	 ;  229 "main.c" 1
+ 1064 0036 A895      		wdr
+ 1065               	 ;  0 "" 2
+ 230:main.c        **** 
+ 231:main.c        **** 
+ 232:main.c        ****     Ti=-13.0;
+ 1066               		.loc 1 232 0
+ 1067               	/* #NOAPP */
+ 1068 0038 40E0      		ldi r20,0
+ 1069 003a 50E0      		ldi r21,0
+ 1070 003c 60E5      		ldi r22,lo8(80)
+ 1071 003e 71EC      		ldi r23,lo8(-63)
+ 1072 0040 4093 0000 		sts Ti,r20
+ 1073 0044 5093 0000 		sts Ti+1,r21
+ 1074 0048 6093 0000 		sts Ti+2,r22
+ 1075 004c 7093 0000 		sts Ti+3,r23
+ 233:main.c        ****     Ts=2;
+ 1076               		.loc 1 233 0
+ 1077 0050 40E0      		ldi r20,0
+ 1078 0052 50E0      		ldi r21,0
+ 1079 0054 60E0      		ldi r22,0
+ 1080 0056 70E4      		ldi r23,lo8(64)
+ 1081 0058 4093 0000 		sts Ts,r20
+ 1082 005c 5093 0000 		sts Ts+1,r21
+ 1083 0060 6093 0000 		sts Ts+2,r22
+ 1084 0064 7093 0000 		sts Ts+3,r23
+ 234:main.c        **** 
+ 235:main.c        ****     vars.setup_temp = 20;
+ 1085               		.loc 1 235 0
+ 1086 0068 94E1      		ldi r25,lo8(20)
+ 1087 006a 9093 0000 		sts vars+1,r25
+ 236:main.c        ****     vars.vent_nom_seg = 4;
+ 1088               		.loc 1 236 0
+ 1089 006e 8093 0000 		sts vars+2,r24
+ 237:main.c        ****     vars.temp_seg = 2;
+ 1090               		.loc 1 237 0
+ 1091 0072 92E0      		ldi r25,lo8(2)
+ 1092 0074 9093 0000 		sts vars+3,r25
+ 238:main.c        ****     vars.wmode = wmode_auto;
+ 1093               		.loc 1 238 0
+ 1094 0078 1092 0000 		sts vars,__zero_reg__
+ 239:main.c        ****     vars.const_cnd_frost_t = COND_T_FROST;
+ 1095               		.loc 1 239 0
+ 1096 007c 85E0      		ldi r24,lo8(5)
+ 1097 007e 8093 0000 		sts vars+7,r24
+ 240:main.c        ****     vars.pid_P_kfc = PID_P_KFC;
+ 1098               		.loc 1 240 0
+ 1099 0082 8093 0000 		sts vars+4,r24
+ 241:main.c        ****     vars.vent_var_kfc = VENT_VAR_KFC;
+ 1100               		.loc 1 241 0
+ 1101 0086 83E0      		ldi r24,lo8(3)
+ 1102 0088 8093 0000 		sts vars+5,r24
+ 242:main.c        ****     vars.temp_seg_delay = TEMP_OUT_DELAY;
+ 1103               		.loc 1 242 0
+ 1104 008c 9093 0000 		sts vars+6,r25
+ 243:main.c        ****     vars.cond_enabled = 0;
+ 1105               		.loc 1 243 0
+ 1106 0090 1092 0000 		sts vars+8,__zero_reg__
+ 244:main.c        ****     vars.auto_defrost = 3;
+ 1107               		.loc 1 244 0
+ 1108 0094 8093 0000 		sts vars+9,r24
+ 245:main.c        **** 
+ 246:main.c        **** 
+ 247:main.c        ****     uart_nl();
+ 1109               		.loc 1 247 0
+ 1110 0098 00D0      		rcall uart_nl
+ 1111               	.LVL95:
+ 248:main.c        ****     int_to_uart("******begin************", 0);
+ 1112               		.loc 1 248 0
+ 1113 009a 60E0      		ldi r22,0
+ 1114 009c 70E0      		ldi r23,0
+ 1115 009e 80E0      		ldi r24,lo8(.LC11)
+ 1116 00a0 90E0      		ldi r25,hi8(.LC11)
+ 1117 00a2 00D0      		rcall int_to_uart
+ 1118               	.LVL96:
+ 249:main.c        ****     uart_nl();
+ 1119               		.loc 1 249 0
+ 1120 00a4 00D0      		rcall uart_nl
+ 1121               	.LVL97:
+ 1122 00a6 C0E0      		ldi r28,0
+ 1123 00a8 D0E0      		ldi r29,0
+ 1124               	.LVL98:
+ 1125               	.L24:
+ 1126               	.LBB34:
+ 250:main.c        **** 
+ 251:main.c        ****     for(int c=0;c< 500;c++){
+ 252:main.c        **** 	uart_nl();
+ 1127               		.loc 1 252 0 discriminator 3
+ 1128 00aa 00D0      		rcall uart_nl
+ 1129               	.LVL99:
+ 253:main.c        **** 	int_to_uart("time",c*10);
+ 1130               		.loc 1 253 0 discriminator 3
+ 1131 00ac BE01      		movw r22,r28
+ 1132 00ae 80E0      		ldi r24,lo8(.LC12)
+ 1133 00b0 90E0      		ldi r25,hi8(.LC12)
+ 1134 00b2 00D0      		rcall int_to_uart
+ 1135               	.LVL100:
+ 254:main.c        **** 	uart_nl();
+ 1136               		.loc 1 254 0 discriminator 3
+ 1137 00b4 00D0      		rcall uart_nl
+ 1138               	.LVL101:
+ 255:main.c        **** 	calcVal();
+ 1139               		.loc 1 255 0 discriminator 3
+ 1140 00b6 00D0      		rcall calcVal
+ 1141               	.LVL102:
+ 256:main.c        **** 	Ts += 0.05;
+ 1142               		.loc 1 256 0 discriminator 3
+ 1143 00b8 6091 0000 		lds r22,Ts
+ 1144 00bc 7091 0000 		lds r23,Ts+1
+ 1145 00c0 8091 0000 		lds r24,Ts+2
+ 1146 00c4 9091 0000 		lds r25,Ts+3
+ 1147 00c8 2DEC      		ldi r18,lo8(-51)
+ 1148 00ca 3CEC      		ldi r19,lo8(-52)
+ 1149 00cc 4CE4      		ldi r20,lo8(76)
+ 1150 00ce 5DE3      		ldi r21,lo8(61)
+ 1151 00d0 00D0      		rcall __addsf3
+ 1152               	.LVL103:
+ 1153 00d2 6093 0000 		sts Ts,r22
+ 1154 00d6 7093 0000 		sts Ts+1,r23
+ 1155 00da 8093 0000 		sts Ts+2,r24
+ 1156 00de 9093 0000 		sts Ts+3,r25
+ 257:main.c        **** 
+ 258:main.c        **** 
+ 259:main.c        **** 
+ 260:main.c        **** 	delay_ms(100);
+ 1157               		.loc 1 260 0 discriminator 3
+ 1158 00e2 84E6      		ldi r24,lo8(100)
+ 1159 00e4 90E0      		ldi r25,0
+ 1160 00e6 00D0      		rcall delay_ms
+ 1161               	.LVL104:
+ 261:main.c        **** 	wdt_reset();
+ 1162               		.loc 1 261 0 discriminator 3
+ 1163               	/* #APP */
+ 1164               	 ;  261 "main.c" 1
+ 1165 00e8 A895      		wdr
+ 1166               	 ;  0 "" 2
+ 1167               	/* #NOAPP */
+ 1168 00ea 2A96      		adiw r28,10
+ 251:main.c        **** 	uart_nl();
+ 1169               		.loc 1 251 0 discriminator 3
+ 1170 00ec C838      		cpi r28,-120
+ 1171 00ee 83E1      		ldi r24,19
+ 1172 00f0 D807      		cpc r29,r24
+ 1173 00f2 01F4      		brne .L24
+ 1174               	.LBE34:
+ 262:main.c        ****     }
+ 263:main.c        **** 
+ 264:main.c        ****     return 0;
+ 265:main.c        **** }
+ 1175               		.loc 1 265 0
+ 1176 00f4 80E0      		ldi r24,0
+ 1177 00f6 90E0      		ldi r25,0
+ 1178               	/* epilogue start */
+ 1179 00f8 DF91      		pop r29
+ 1180 00fa CF91      		pop r28
+ 1181 00fc 0895      		ret
+ 1182               		.cfi_endproc
+ 1183               	.LFE24:
+ 1185               		.comm	vars,10,1
+ 1186               	.global	Ts
+ 1187               		.section .bss
+ 1190               	Ts:
+ 1191 0000 0000 0000 		.zero	4
+ 1192               	.global	Ti
+ 1195               	Ti:
+ 1196 0004 0000 0000 		.zero	4
+ 1197               		.comm	flags,1,1
+ 1198               		.comm	temp_out_delay,1,1
+ 1199               		.comm	temp_out_prc,1,1
+ 1200               		.comm	vent_add_prc,1,1
+ 1201               		.comm	last_delta,4,1
+ 1202               		.comm	Ipid,4,1
+ 1203               		.comm	temp_enc,1,1
+ 1204               		.comm	vent_enc,1,1
+ 1205               		.comm	temp_seg_cur,1,1
+ 1206               		.comm	vent_seg_cur,1,1
+ 1207               		.text
+ 1208               	.Letext0:
+ 1209               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 1210               		.file 4 "vars.h"
+ 1211               		.file 5 "subs.h"
+ 1212               		.file 6 "usart.h"
+ 1213               		.file 7 "/usr/lib/avr/include/stdio.h"
+ 1214               		.file 8 "/usr/lib/avr/include/avr/eeprom.h"
+ 1215               		.file 9 "/usr/lib/avr/include/math.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccB5NZkF.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccB5NZkF.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccB5NZkF.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccB5NZkF.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccB5NZkF.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccB5NZkF.s:18     .text:0000000000000000 int_to_uart
+     /tmp/ccB5NZkF.s:115    .text:000000000000006a float_to_uart
+     /tmp/ccB5NZkF.s:152    .text:000000000000007e uart_nl
+     /tmp/ccB5NZkF.s:173    .text:0000000000000086 __vector_8
+                            *COM*:0000000000000001 flags
+     /tmp/ccB5NZkF.s:238    .text:00000000000000b8 getADC
+     /tmp/ccB5NZkF.s:336    .text:0000000000000108 calcTemp
+     /tmp/ccB5NZkF.s:425    .text:0000000000000178 set_def_vals
+     /tmp/ccB5NZkF.s:438    .text:000000000000017a myread_eeprom
+                            *COM*:000000000000000a vars
+     /tmp/ccB5NZkF.s:466    .text:000000000000018a myupdate_eeprom
+     /tmp/ccB5NZkF.s:500    .text:00000000000001a2 calcCond
+     /tmp/ccB5NZkF.s:514    .text:00000000000001a4 calcVent
+     /tmp/ccB5NZkF.s:552    .text:00000000000001a6 calcVal
+     /tmp/ccB5NZkF.s:1195   .bss:0000000000000004 Ti
+     /tmp/ccB5NZkF.s:1190   .bss:0000000000000000 Ts
+                            *COM*:0000000000000004 last_delta
+                            *COM*:0000000000000004 Ipid
+                            *COM*:0000000000000001 temp_out_delay
+                            *COM*:0000000000000001 temp_out_prc
+     /tmp/ccB5NZkF.s:929    .text:00000000000003e2 setup_pins
+     /tmp/ccB5NZkF.s:977    .text.startup:0000000000000000 main
+                            *COM*:0000000000000001 vent_add_prc
+                            *COM*:0000000000000001 temp_enc
+                            *COM*:0000000000000001 vent_enc
+                            *COM*:0000000000000001 temp_seg_cur
+                            *COM*:0000000000000001 vent_seg_cur
+
+UNDEFINED SYMBOLS
+USART_SendStr
+snprintf
+USART_PutChar
+__fixsfsi
+__floatunsisf
+__addsf3
+__divsf3
+ADC_Start
+ADC_GetData
+__subsf3
+__mulsf3
+ADC_Mux
+log
+eeprom_read_block
+eeprom_update_block
+eeprom_update_byte
+__floatsisf
+__ltsf2
+__fixunssfsi
+check_rangef
+ADC_Init
+USART_Init
+delay_ms
+__do_copy_data
+__do_clear_bss

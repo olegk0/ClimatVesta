@@ -1,0 +1,194 @@
+   1               		.file	"usart.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	USART_Init
+  12               	USART_Init:
+  13               	.LFB1:
+  14               		.file 1 "usart.c"
+   1:usart.c       **** #include "usart.h"
+   2:usart.c       **** #include "subs.h"
+   3:usart.c       **** #include "io.h"
+   4:usart.c       **** 
+   5:usart.c       **** #define USART_BAUDRATE 38400
+   6:usart.c       **** #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1) 
+   7:usart.c       **** 
+   8:usart.c       **** void USART_Init(void)
+   9:usart.c       **** {
+  15               		.loc 1 9 0
+  16               		.cfi_startproc
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  10:usart.c       ****     UBRR0L = (uint8_t) (BAUD_PRESCALE & 0xff);
+  21               		.loc 1 10 0
+  22 0000 8CE0      		ldi r24,lo8(12)
+  23 0002 8093 C400 		sts 196,r24
+  11:usart.c       ****     UBRR0H = (uint8_t) (BAUD_PRESCALE >> 8);
+  24               		.loc 1 11 0
+  25 0006 1092 C500 		sts 197,__zero_reg__
+  12:usart.c       ****     //UCSR0B = (1 << RXCIE0) | (1 << RXEN0) | (1 << TXEN0);
+  13:usart.c       ****     UCSR0B = (1 << TXEN0);
+  26               		.loc 1 13 0
+  27 000a 88E0      		ldi r24,lo8(8)
+  28 000c 8093 C100 		sts 193,r24
+  14:usart.c       **** 
+  15:usart.c       ****     set_dir_out(OUT_UART_TX);
+  29               		.loc 1 15 0
+  30 0010 519A      		sbi 0xa,1
+  31 0012 0895      		ret
+  32               		.cfi_endproc
+  33               	.LFE1:
+  35               	.global	USART_PutChar
+  37               	USART_PutChar:
+  38               	.LFB2:
+  16:usart.c       **** }
+  17:usart.c       **** 
+  18:usart.c       **** //______________________________________________________________________________
+  19:usart.c       **** //помещает символ в буфер, инициирует начало передачи
+  20:usart.c       **** void USART_PutChar(char sym)
+  21:usart.c       **** {
+  39               		.loc 1 21 0
+  40               		.cfi_startproc
+  41               	.LVL0:
+  42               	/* prologue: function */
+  43               	/* frame size = 0 */
+  44               	/* stack size = 0 */
+  45               	.L__stack_usage = 0
+  46               	.LBB4:
+  47               	.LBB5:
+  48               		.file 2 "subs.h"
+   1:subs.h        **** //#include <avr/wdt.h>
+   2:subs.h        **** #define XTAL F_CPU
+   3:subs.h        **** #include <stdint.h>
+   4:subs.h        **** #include <avr/interrupt.h>
+   5:subs.h        **** 
+   6:subs.h        **** #define BTN_LONG_DELAY	2
+   7:subs.h        **** 
+   8:subs.h        **** typedef enum {
+   9:subs.h        ****     ADC0=0,
+  10:subs.h        ****     ADC1 =1,
+  11:subs.h        ****     ADC2 =2,
+  12:subs.h        ****     ADC3 =3,
+  13:subs.h        ****     ADC4 =4,
+  14:subs.h        ****     ADC5 =5,
+  15:subs.h        ****     ADC6 =6,
+  16:subs.h        ****     ADC7 =7
+  17:subs.h        **** } adc_in_type;
+  18:subs.h        **** 
+  19:subs.h        **** /*************************************************************************
+  20:subs.h        ****  delay loop for small accurate delays: 16-bit counter, 4 cycles/loop
+  21:subs.h        ****  *************************************************************************/
+  22:subs.h        **** static inline void _delayFourCycles(uint16_t __count)
+  23:subs.h        **** {
+  24:subs.h        ****     if (__count == 0)
+  25:subs.h        **** 	__asm__ __volatile__( "rjmp 1f\n 1:" );
+  26:subs.h        ****     // 2 cycles
+  27:subs.h        ****     else
+  28:subs.h        **** 	__asm__ __volatile__ (
+  49               		.loc 2 28 0
+  50 0014 22E0      		ldi r18,lo8(2)
+  51 0016 30E0      		ldi r19,0
+  52               	.L3:
+  53               	.LBE5:
+  54               	.LBE4:
+  22:usart.c       ****     while (!( UCSR0A & (1 << UDRE0)))
+  55               		.loc 1 22 0
+  56 0018 9091 C000 		lds r25,192
+  57 001c 95FD      		sbrc r25,5
+  58 001e 00C0      		rjmp .L6
+  59               	.LVL1:
+  60               	.LBB7:
+  61               	.LBB6:
+  62               		.loc 2 28 0
+  63 0020 F901      		movw r30,r18
+  64               	/* #APP */
+  65               	 ;  28 "subs.h" 1
+  66 0022 3197      		1: sbiw r30,1
+  67 0024 01F4      		brne 1b
+  68               	 ;  0 "" 2
+  69               	.LVL2:
+  70               	/* #NOAPP */
+  71 0026 00C0      		rjmp .L3
+  72               	.L6:
+  73               	.LBE6:
+  74               	.LBE7:
+  23:usart.c       **** 	delay(1);
+  24:usart.c       ****     UDR0 = sym;
+  75               		.loc 1 24 0
+  76 0028 8093 C600 		sts 198,r24
+  77 002c 0895      		ret
+  78               		.cfi_endproc
+  79               	.LFE2:
+  81               	.global	USART_SendStr
+  83               	USART_SendStr:
+  84               	.LFB3:
+  25:usart.c       **** }
+  26:usart.c       **** 
+  27:usart.c       **** //функция посылающая строку по usart`у
+  28:usart.c       **** void USART_SendStr(char * data)
+  29:usart.c       **** {
+  85               		.loc 1 29 0
+  86               		.cfi_startproc
+  87               	.LVL3:
+  88 002e CF93      		push r28
+  89               	.LCFI0:
+  90               		.cfi_def_cfa_offset 3
+  91               		.cfi_offset 28, -2
+  92 0030 DF93      		push r29
+  93               	.LCFI1:
+  94               		.cfi_def_cfa_offset 4
+  95               		.cfi_offset 29, -3
+  96               	/* prologue: function */
+  97               	/* frame size = 0 */
+  98               	/* stack size = 2 */
+  99               	.L__stack_usage = 2
+ 100 0032 EC01      		movw r28,r24
+ 101               	.LVL4:
+ 102               	.L8:
+  30:usart.c       ****     uint8_t sym;
+  31:usart.c       ****     while (*data) {
+ 103               		.loc 1 31 0
+ 104 0034 8991      		ld r24,Y+
+ 105               	.LVL5:
+ 106 0036 8823      		tst r24
+ 107 0038 01F0      		breq .L10
+ 108               	.LVL6:
+  32:usart.c       **** 	sym = *data++;
+  33:usart.c       **** 	USART_PutChar(sym);
+ 109               		.loc 1 33 0
+ 110 003a 0E94 0000 		call USART_PutChar
+ 111               	.LVL7:
+ 112 003e 00C0      		rjmp .L8
+ 113               	.LVL8:
+ 114               	.L10:
+ 115               	/* epilogue start */
+  34:usart.c       ****     }
+  35:usart.c       **** }
+ 116               		.loc 1 35 0
+ 117 0040 DF91      		pop r29
+ 118 0042 CF91      		pop r28
+ 119               	.LVL9:
+ 120 0044 0895      		ret
+ 121               		.cfi_endproc
+ 122               	.LFE3:
+ 124               	.Letext0:
+ 125               		.file 3 "/usr/lib/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usart.c
+     /tmp/cci5hWIF.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cci5hWIF.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cci5hWIF.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cci5hWIF.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cci5hWIF.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cci5hWIF.s:12     .text:0000000000000000 USART_Init
+     /tmp/cci5hWIF.s:37     .text:0000000000000014 USART_PutChar
+     /tmp/cci5hWIF.s:83     .text:000000000000002e USART_SendStr
+
+NO UNDEFINED SYMBOLS
